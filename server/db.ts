@@ -186,7 +186,33 @@ export async function createSpecies(sp: InsertSpecies) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
 
-  const result = await db.insert(species).values(sp);
+  if (!sp.galaxyId) {
+    throw new Error("galaxyId is required for species creation");
+  }
+  if (!sp.name) {
+    throw new Error("name is required for species creation");
+  }
+  if (!sp.speciesType) {
+    throw new Error("speciesType is required for species creation");
+  }
+  if (sp.yearOfOrigin === undefined || sp.yearOfOrigin === null) {
+    throw new Error("yearOfOrigin is required for species creation");
+  }
+
+  const speciesData: InsertSpecies = {
+    ...sp,
+    galaxyId: sp.galaxyId,
+    name: sp.name,
+    speciesType: sp.speciesType,
+    yearOfOrigin: sp.yearOfOrigin,
+    traits: sp.traits || [],
+    physicalDescription: sp.physicalDescription || "",
+    culturalDescription: sp.culturalDescription || "",
+    color: sp.color || "#808080",
+    extinct: sp.extinct ?? false,
+  };
+
+  const result = await db.insert(species).values(speciesData);
   return result;
 }
 
@@ -315,8 +341,39 @@ export async function createEvent(event: InsertEvent) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
 
-  const result = await db.insert(events).values(event);
-  return result;
+  if (!event.galaxyId) {
+    throw new Error("galaxyId is required for event creation");
+  }
+  if (!event.title) {
+    throw new Error("title is required for event creation");
+  }
+  if (!event.description) {
+    throw new Error("description is required for event creation");
+  }
+  if (event.year === undefined || event.year === null) {
+    throw new Error("year is required for event creation");
+  }
+  if (!event.eventType) {
+    throw new Error("eventType is required for event creation");
+  }
+  if (event.importance === undefined || event.importance === null) {
+    throw new Error("importance is required for event creation");
+  }
+
+  const eventData: InsertEvent = {
+    ...event,
+    galaxyId: event.galaxyId,
+    year: event.year,
+    eventType: event.eventType,
+    title: event.title,
+    description: event.description,
+    importance: event.importance,
+    speciesIds: event.speciesIds || [],
+    planetIds: event.planetIds || [],
+    civilizationIds: event.civilizationIds || [],
+  };
+
+  return await db.insert(events).values(eventData);
 }
 
 export async function getGalaxyEvents(galaxyId: number) {

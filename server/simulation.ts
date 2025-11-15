@@ -56,7 +56,7 @@ interface HistoricalEra {
 /**
  * Initialize a new galaxy and pre-compute its entire history (Dwarf Fortress style)
  */
-export async function generateGalaxyHistory(config: SimulationConfig) {
+export async function generateGalaxyHistory(config: SimulationConfig): Promise<number> {
   // Create galaxy record
   const galaxyData: InsertGalaxy = {
     userId: config.userId,

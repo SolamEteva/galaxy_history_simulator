@@ -15,6 +15,34 @@
       "when": 1762400538081,
       "tag": "0001_regular_earthquake",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1762975785010,
+      "tag": "0002_organic_malice",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1762975815986,
+      "tag": "0003_chilly_frank_castle",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1762975831350,
+      "tag": "0004_green_the_twelve",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1763057911131,
+      "tag": "0005_lucky_trauma",
+      "breakpoints": true
     }
   ]
 }
