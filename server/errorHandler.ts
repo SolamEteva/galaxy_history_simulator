@@ -202,7 +202,7 @@ export class Validator {
     const errors: string[] = [];
     const warnings: string[] = [];
 
-    if (!params.name || params.name.trim().length === 0) {
+    if (!params.galaxyName || params.galaxyName.trim().length === 0) {
       errors.push("Galaxy name is required");
     }
 
@@ -210,11 +210,11 @@ export class Validator {
       errors.push("Species count must be between 1 and 8");
     }
 
-    if (!params.simulationYears || params.simulationYears < 1000) {
+    if (!params.totalYears || params.totalYears < 1000) {
       errors.push("Simulation must be at least 1000 years");
     }
 
-    if (params.simulationYears > 1000000) {
+    if (params.totalYears > 1000000) {
       warnings.push("Very long simulations may take significant time to generate");
     }
 
