@@ -59,8 +59,11 @@ export async function generateGalaxyHistoryV2(config: SimpleSimulationConfig): P
       2
     );
 
-    galaxyId = (galaxyRecord as any).insertId as number;
+    // Handle both old and new return formats
+    galaxyId = (galaxyRecord as any).insertId || (galaxyRecord as any)[0]?.id;
+    
     if (!galaxyId || galaxyId <= 0) {
+      console.error('Galaxy record result:', galaxyRecord);
       throw new Error("Failed to create galaxy - invalid ID");
     }
 
@@ -105,7 +108,7 @@ export async function generateGalaxyHistoryV2(config: SimpleSimulationConfig): P
           2
         );
 
-        const speciesId = (speciesRecord as any).insertId as number;
+        const speciesId = (speciesRecord as any).insertId || (speciesRecord as any)[0]?.id;
         if (speciesId && speciesId > 0) {
           speciesIds.push(speciesId);
           console.log(`  ✓ ${speciesName} (ID: ${speciesId})`);
@@ -152,7 +155,7 @@ export async function generateGalaxyHistoryV2(config: SimpleSimulationConfig): P
           2
         );
 
-        const planetId = (planetRecord as any).insertId as number;
+        const planetId = (planetRecord as any).insertId || (planetRecord as any)[0]?.id;
         if (planetId && planetId > 0) {
           console.log(`  ✓ Planet-${i + 1} (ID: ${planetId})`);
         }
@@ -193,7 +196,7 @@ export async function generateGalaxyHistoryV2(config: SimpleSimulationConfig): P
           2
         );
 
-        const eventId = (eventRecord as any).insertId as number;
+        const eventId = (eventRecord as any).insertId || (eventRecord as any)[0]?.id;
         if (eventId && eventId > 0) {
           console.log(`  ✓ Event: Origin of ${speciesName} (ID: ${eventId})`);
           await logger.logEventGeneration(galaxyId, 0, `Origin of ${speciesName}`, true);

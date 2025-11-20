@@ -3,7 +3,8 @@ import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import { z } from "zod";
-import { generateGalaxyHistoryV2 } from "./simulationV2";
+import { generateGalaxyHistoryV3 } from "./simulationV3";
+import { debugRouter } from "./debugRouter";
 import {
   getUserGalaxies,
   getGalaxy,
@@ -19,6 +20,7 @@ import {
 
 export const appRouter = router({
   system: systemRouter,
+  debug: debugRouter,
 
   auth: router({
     me: publicProcedure.query((opts) => opts.ctx.user),
@@ -47,7 +49,7 @@ export const appRouter = router({
       )
       .mutation(async ({ ctx, input }) => {
         try {
-          const galaxyId = await generateGalaxyHistoryV2({
+          const galaxyId = await generateGalaxyHistoryV3({
             galaxyName: input.galaxyName,
             userId: ctx.user!.id,
             speciesCount: input.speciesCount,

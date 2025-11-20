@@ -120,8 +120,24 @@ export async function createGalaxy(galaxy: InsertGalaxy) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
 
-  const result = await db.insert(galaxies).values(galaxy);
-  return result;
+  try {
+    const result = await db.insert(galaxies).values(galaxy);
+    
+    // Extract the inserted ID from the result
+    // Drizzle returns an object with insertId property for MySQL
+    const insertId = (result as any).insertId || (result as any)[0]?.id;
+    
+    if (!insertId) {
+      console.error('Insert result:', result);
+      throw new Error('Failed to get insert ID from database');
+    }
+    
+    console.log(`[DB] Galaxy created with ID: ${insertId}`);
+    return { insertId, success: true };
+  } catch (error) {
+    console.error('[DB] Failed to create galaxy:', error);
+    throw error;
+  }
 }
 
 export async function getGalaxy(galaxyId: number) {
