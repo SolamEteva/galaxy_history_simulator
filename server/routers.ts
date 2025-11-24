@@ -3,7 +3,7 @@ import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import { z } from "zod";
-import { generateGalaxyHistoryV3 } from "./simulationV3";
+import { generateGalaxyHistoryV4 } from "./simulationV4";
 import { debugRouter } from "./debugRouter";
 import {
   getUserGalaxies,
@@ -49,7 +49,7 @@ export const appRouter = router({
       )
       .mutation(async ({ ctx, input }) => {
         try {
-          const galaxyId = await generateGalaxyHistoryV3({
+          const galaxyId = await generateGalaxyHistoryV4({
             galaxyName: input.galaxyName,
             userId: ctx.user!.id,
             speciesCount: input.speciesCount,
@@ -63,8 +63,10 @@ export const appRouter = router({
             message: "Galaxy history generated successfully",
           };
         } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : String(error);
           console.error("Error generating galaxy:", error);
-          throw new Error("Failed to generate galaxy history");
+          console.error("Error message:", errorMessage);
+          throw new Error(`Galaxy generation failed: ${errorMessage}`);
         }
       }),
 

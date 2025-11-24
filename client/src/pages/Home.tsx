@@ -17,6 +17,7 @@ export default function Home() {
   const [totalYears, setTotalYears] = useState(50000);
   const [seed, setSeed] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
+  const [errorDetails, setErrorDetails] = useState<string | null>(null);
 
   const generateGalaxy = trpc.galaxy.generate.useMutation({
     onSuccess: (data) => {
@@ -28,7 +29,10 @@ export default function Home() {
     },
     onError: (error) => {
       setIsGenerating(false);
-      toast.error(`Failed to generate galaxy: ${error.message}`);
+      const errorMsg = error.message || "Unknown error";
+      setErrorDetails(errorMsg);
+      console.error("Full error:", error);
+      toast.error(`Failed to generate galaxy: ${errorMsg}`);
     },
   });
 
@@ -118,6 +122,17 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 p-4 md:p-8">
+      {errorDetails && (
+        <div className="max-w-6xl mx-auto mb-4 p-4 bg-red-900 border border-red-700 rounded-lg">
+          <p className="text-red-100 text-sm font-mono break-words">{errorDetails}</p>
+          <button
+            onClick={() => setErrorDetails(null)}
+            className="mt-2 text-xs text-red-300 hover:text-red-100"
+          >
+            Dismiss
+          </button>
+        </div>
+      )}
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-8">
