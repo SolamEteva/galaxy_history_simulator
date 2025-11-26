@@ -3,7 +3,7 @@ import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import { z } from "zod";
-import { generateGalaxyHistoryV4 } from "./simulationV4";
+import { generateRichGalaxyHistory } from "./simulationRich";
 import { debugRouter } from "./debugRouter";
 import {
   getUserGalaxies,
@@ -49,7 +49,7 @@ export const appRouter = router({
       )
       .mutation(async ({ ctx, input }) => {
         try {
-          const galaxyId = await generateGalaxyHistoryV4({
+          const galaxyId = await generateRichGalaxyHistory({
             galaxyName: input.galaxyName,
             userId: ctx.user!.id,
             speciesCount: input.speciesCount,

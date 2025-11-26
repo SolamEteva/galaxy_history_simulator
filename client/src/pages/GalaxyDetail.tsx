@@ -1,387 +1,282 @@
 import { useParams, useLocation } from "wouter";
-import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, ArrowLeft, Sparkles, Users, Globe, BookOpen, Zap } from "lucide-react";
-import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ArrowLeft, Loader2 } from "lucide-react";
+import { useState } from "react";
 
 export default function GalaxyDetail() {
   const { galaxyId } = useParams<{ galaxyId: string }>();
   const [, setLocation] = useLocation();
-  const { user, loading: authLoading } = useAuth();
-  const [selectedEventId, setSelectedEventId] = useState<number | null>(null);
+  const [selectedTab, setSelectedTab] = useState("overview");
 
-  const galaxyQuery = trpc.galaxy.get.useQuery({ galaxyId: parseInt(galaxyId!) });
-  const speciesQuery = trpc.galaxy.getSpecies.useQuery({ galaxyId: parseInt(galaxyId!) });
-  const planetsQuery = trpc.galaxy.getPlanets.useQuery({ galaxyId: parseInt(galaxyId!) });
-  const eventsQuery = trpc.galaxy.getEvents.useQuery({ galaxyId: parseInt(galaxyId!) });
-  const eventConnectionsQuery = trpc.galaxy.getEventConnections.useQuery({
-    galaxyId: parseInt(galaxyId!),
-  });
+  const galaxyQuery = trpc.galaxy.get.useQuery({ galaxyId: parseInt(galaxyId || "0") });
+  const speciesQuery = trpc.galaxy.getSpecies.useQuery({ galaxyId: parseInt(galaxyId || "0") });
+  const planetsQuery = trpc.galaxy.getPlanets.useQuery({ galaxyId: parseInt(galaxyId || "0") });
+  const eventsQuery = trpc.galaxy.getEvents.useQuery({ galaxyId: parseInt(galaxyId || "0") });
 
-  if (authLoading || galaxyQuery.isLoading) {
+  if (galaxyQuery.isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 to-slate-800">
-        <Loader2 className="animate-spin w-8 h-8 text-blue-400" />
-      </div>
-    );
-  }
-
-  if (!user) {
-    setLocation("/");
-    return null;
-  }
-
-  const galaxy = galaxyQuery.data;
-  const species = (speciesQuery.data || []) as any[];
-  const planets = (planetsQuery.data || []) as any[];
-  const events = (eventsQuery.data || []) as any[];
-  const connections = (eventConnectionsQuery.data || []) as any[];
-
-  if (galaxyQuery.error || !galaxy) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 to-slate-800 p-4">
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 p-4 md:p-8 flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-white mb-4">Galaxy Not Found</h1>
-          <Button onClick={() => setLocation("/")} className="bg-blue-600 hover:bg-blue-700">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Home
-          </Button>
+          <Loader2 className="w-12 h-12 animate-spin text-blue-400 mx-auto mb-4" />
+          <p className="text-slate-300">Loading galaxy...</p>
         </div>
       </div>
     );
   }
 
+  if (!galaxyQuery.data) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 p-4 md:p-8">
+        <Button onClick={() => setLocation("/")} variant="outline" className="mb-6">
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Back
+        </Button>
+        <Card className="bg-slate-800 border-slate-700">
+          <CardContent className="pt-6">
+            <p className="text-slate-300">Galaxy not found</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "completed":
-        return "text-green-400";
-      case "running":
-        return "text-yellow-400";
-      case "paused":
-        return "text-orange-400";
-      default:
-        return "text-slate-400";
-    }
-  };
-
-  const getStatusText = (status: string) => {
-    switch (status) {
-      case "completed":
-        return "✓ History Generated";
-      case "running":
-        return "⟳ Generating...";
-      case "paused":
-        return "⏸ Paused";
-      default:
-        return "○ Created";
-    }
-  };
+  const galaxy = galaxyQuery.data;
+  const species = speciesQuery.data || [];
+  const planets = planetsQuery.data || [];
+  const events = eventsQuery.data || [];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 p-4 md:p-8">
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <Button
-            onClick={() => setLocation("/")}
-            variant="ghost"
-            className="text-slate-400 hover:text-white mb-4"
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Galaxies
-          </Button>
+        <Button onClick={() => setLocation("/")} variant="outline" className="mb-6">
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Back to Galaxies
+        </Button>
 
-          <div className="flex items-start justify-between">
+        <div className="bg-gradient-to-r from-blue-900 to-purple-900 rounded-lg p-6 border border-blue-700 mb-8">
+          <h1 className="text-4xl font-bold text-white mb-2">{galaxy.name}</h1>
+          <p className="text-blue-200 mb-4">{galaxy.description}</p>
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm">
             <div>
-              <h1 className="text-4xl font-bold text-white mb-2">{galaxy.name}</h1>
-              <p className={`text-lg font-semibold ${getStatusColor(galaxy.status)}`}>
-                {getStatusText(galaxy.status)}
-              </p>
+              <p className="text-blue-300">Status</p>
+              <p className="text-white font-semibold capitalize">{galaxy.status}</p>
+            </div>
+            <div>
+              <p className="text-blue-300">Species</p>
+              <p className="text-white font-semibold">{species.length}</p>
+            </div>
+            <div>
+              <p className="text-blue-300">Planets</p>
+              <p className="text-white font-semibold">{planets.length}</p>
+            </div>
+            <div>
+              <p className="text-blue-300">Events</p>
+              <p className="text-white font-semibold">{events.length}</p>
+            </div>
+            <div>
+              <p className="text-blue-300">Years</p>
+              <p className="text-white font-semibold">{galaxy.endYear.toLocaleString()}</p>
             </div>
           </div>
-
-          {galaxy.description && (
-            <p className="text-slate-300 mt-4">{galaxy.description}</p>
-          )}
         </div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <Card className="bg-slate-800 border-slate-700">
-            <CardContent className="pt-6">
-              <div className="text-center">
-                <Users className="w-6 h-6 text-blue-400 mx-auto mb-2" />
-                <p className="text-2xl font-bold text-white">{species.length}</p>
-                <p className="text-sm text-slate-400">Species</p>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-slate-800 border-slate-700">
-            <CardContent className="pt-6">
-              <div className="text-center">
-                <Globe className="w-6 h-6 text-green-400 mx-auto mb-2" />
-                <p className="text-2xl font-bold text-white">{planets.length}</p>
-                <p className="text-sm text-slate-400">Planets</p>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-slate-800 border-slate-700">
-            <CardContent className="pt-6">
-              <div className="text-center">
-                <Sparkles className="w-6 h-6 text-purple-400 mx-auto mb-2" />
-                <p className="text-2xl font-bold text-white">{events.length}</p>
-                <p className="text-sm text-slate-400">Events</p>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-slate-800 border-slate-700">
-            <CardContent className="pt-6">
-              <div className="text-center">
-                <Zap className="w-6 h-6 text-yellow-400 mx-auto mb-2" />
-                <p className="text-2xl font-bold text-white">{galaxy.endYear.toLocaleString()}</p>
-                <p className="text-sm text-slate-400">Years</p>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Tabs */}
-        <Tabs defaultValue="timeline" className="space-y-4">
-          <TabsList className="bg-slate-800 border-slate-700">
-            <TabsTrigger value="timeline" className="text-slate-300 data-[state=active]:text-white">
-              Timeline
-            </TabsTrigger>
-            <TabsTrigger value="species" className="text-slate-300 data-[state=active]:text-white">
-              Species
-            </TabsTrigger>
-            <TabsTrigger value="planets" className="text-slate-300 data-[state=active]:text-white">
-              Planets
-            </TabsTrigger>
+        <Tabs value={selectedTab} onValueChange={setSelectedTab}>
+          <TabsList className="grid w-full grid-cols-4 mb-6">
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="species">Species ({species.length})</TabsTrigger>
+            <TabsTrigger value="planets">Planets ({planets.length})</TabsTrigger>
+            <TabsTrigger value="timeline">Events ({events.length})</TabsTrigger>
           </TabsList>
 
-          {/* Timeline Tab */}
-          <TabsContent value="timeline" className="space-y-4">
+          <TabsContent value="overview">
             <Card className="bg-slate-800 border-slate-700">
               <CardHeader>
-                <CardTitle className="text-white">Historical Timeline</CardTitle>
-                <CardDescription className="text-slate-400">
-                  {events.length} major events spanning {galaxy.endYear.toLocaleString()} years
-                </CardDescription>
+                <CardTitle className="text-white">Galaxy Overview</CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-3 max-h-96 overflow-y-auto">
-                  {events.length === 0 ? (
-                    <p className="text-slate-400 text-center py-8">No events generated yet</p>
-                  ) : (
-                    events.map((event) => (
-                      <div
-                        key={event.id}
-                        onClick={() => setSelectedEventId(event.id)}
-                        className={`p-4 rounded-lg border cursor-pointer transition-all ${
-                          selectedEventId === event.id
-                            ? "bg-blue-900 border-blue-500"
-                            : "bg-slate-700 border-slate-600 hover:border-slate-500"
-                        }`}
-                      >
-                        <div className="flex justify-between items-start mb-2">
-                          <h3 className="font-semibold text-white">{event.title}</h3>
-                          <span className="text-xs bg-blue-600 text-white px-2 py-1 rounded">
-                            Year {event.year}
-                          </span>
-                        </div>
-                        <p className="text-sm text-slate-300 line-clamp-2">{event.description}</p>
-                        <div className="flex gap-2 mt-2 flex-wrap">
-                          <span className="text-xs bg-slate-600 text-slate-200 px-2 py-1 rounded">
-                            {event.eventType}
-                          </span>
-                          <span className="text-xs bg-purple-600 text-purple-100 px-2 py-1 rounded">
-                            Importance: {event.importance}/10
-                          </span>
-                        </div>
-                      </div>
-                    ))
-                  )}
+              <CardContent className="space-y-4">
+                <div>
+                  <p className="text-slate-400 text-sm">Description</p>
+                  <p className="text-slate-100">{galaxy.description}</p>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  <div className="bg-slate-700 rounded p-3">
+                    <p className="text-slate-400 text-xs">Start Year</p>
+                    <p className="text-white font-semibold">{galaxy.startYear}</p>
+                  </div>
+                  <div className="bg-slate-700 rounded p-3">
+                    <p className="text-slate-400 text-xs">End Year</p>
+                    <p className="text-white font-semibold">{galaxy.endYear}</p>
+                  </div>
+                  <div className="bg-slate-700 rounded p-3">
+                    <p className="text-slate-400 text-xs">Total Species</p>
+                    <p className="text-white font-semibold">{species.length}</p>
+                  </div>
+                  <div className="bg-slate-700 rounded p-3">
+                    <p className="text-slate-400 text-xs">Total Planets</p>
+                    <p className="text-white font-semibold">{planets.length}</p>
+                  </div>
+                  <div className="bg-slate-700 rounded p-3">
+                    <p className="text-slate-400 text-xs">Total Events</p>
+                    <p className="text-white font-semibold">{events.length}</p>
+                  </div>
+                  <div className="bg-slate-700 rounded p-3">
+                    <p className="text-slate-400 text-xs">Status</p>
+                    <p className="text-white font-semibold capitalize">{galaxy.status}</p>
+                  </div>
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
 
-            {/* Event Detail */}
-            {selectedEventId && (
+          <TabsContent value="species" className="space-y-4">
+            {species.length === 0 ? (
               <Card className="bg-slate-800 border-slate-700">
-                <CardHeader>
-                  <CardTitle className="text-white">Event Details</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {events.find((e) => e.id === selectedEventId) && (
-                    <div className="space-y-4">
-                      <div>
-                        <p className="text-sm text-slate-400 mb-1">Title</p>
-                        <p className="text-white font-semibold">
-                          {events.find((e) => e.id === selectedEventId)?.title}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-sm text-slate-400 mb-1">Description</p>
-                        <p className="text-slate-300">
-                          {events.find((e) => e.id === selectedEventId)?.description}
-                        </p>
-                      </div>
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <p className="text-sm text-slate-400 mb-1">Year</p>
-                          <p className="text-white">
-                            {events.find((e) => e.id === selectedEventId)?.year}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-sm text-slate-400 mb-1">Type</p>
-                          <p className="text-white">
-                            {events.find((e) => e.id === selectedEventId)?.eventType}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
+                <CardContent className="pt-6">
+                  <p className="text-slate-400">No species found.</p>
                 </CardContent>
               </Card>
+            ) : (
+              species.map((sp) => (
+                <Card key={sp.id} className="bg-slate-800 border-slate-700">
+                  <CardHeader>
+                    <div className="flex items-center gap-3">
+                      <div
+                        className="w-4 h-4 rounded-full flex-shrink-0"
+                        style={{ backgroundColor: sp.color || "#888" }}
+                      />
+                      <div className="flex-1">
+                        <CardTitle className="text-white">{sp.name}</CardTitle>
+                        <p className="text-sm text-slate-400 capitalize">{sp.speciesType}</p>
+                      </div>
+                      {sp.extinct && (
+                        <span className="px-2 py-1 bg-red-900 text-red-200 text-xs rounded">
+                          Extinct
+                        </span>
+                      )}
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <div>
+                      <p className="text-slate-400 text-sm">Physical</p>
+                      <p className="text-slate-100 text-sm">{sp.physicalDescription}</p>
+                    </div>
+                    <div>
+                      <p className="text-slate-400 text-sm">Culture</p>
+                      <p className="text-slate-100 text-sm">{sp.culturalDescription}</p>
+                    </div>
+                    {(() => {
+                      const traits = sp.traits as any[];
+                      return traits && Array.isArray(traits) && traits.length > 0 ? (
+                        <div>
+                          <p className="text-slate-400 text-sm mb-2">Traits</p>
+                          <div className="flex flex-wrap gap-2">
+                            {traits.map((trait: any, idx: number) => (
+                              <span key={idx} className="px-2 py-1 bg-blue-900 text-blue-200 text-xs rounded">
+                                {trait}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      ) : null;
+                    })()}
+                      <div className="grid grid-cols-2 gap-2 text-sm">
+                      <div>
+                        <p className="text-slate-400">Origin</p>
+                        <p className="text-white">Year {sp.yearOfOrigin}</p>
+                      </div>
+                      {sp.yearOfExtinction && (
+                        <div>
+                          <p className="text-slate-400">Extinction</p>
+                          <p className="text-white">Year {sp.yearOfExtinction}</p>
+                        </div>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))
             )}
           </TabsContent>
 
-          {/* Species Tab */}
-          <TabsContent value="species" className="space-y-4">
-            <Card className="bg-slate-800 border-slate-700">
-              <CardHeader>
-                <CardTitle className="text-white">Species Encyclopedia</CardTitle>
-                <CardDescription className="text-slate-400">
-                  {species.length} sentient species in this galaxy
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {species.map((sp) => (
-                    <div
-                      key={sp.id}
-                      className="p-4 bg-slate-700 rounded-lg border border-slate-600 hover:border-slate-500 transition-all"
-                    >
-                      <div className="flex items-start gap-3 mb-3">
-                        <div
-                          className="w-4 h-4 rounded-full flex-shrink-0 mt-1"
-                          style={{ backgroundColor: sp.color || "#888888" }}
-                        />
-                        <div>
-                          <h3 className="font-semibold text-white">{sp.name}</h3>
-                          <p className="text-xs text-slate-400">{sp.speciesType}</p>
-                        </div>
-                      </div>
-
-                      <p className="text-sm text-slate-300 mb-3">{sp.physicalDescription}</p>
-
-                      <div className="space-y-2 text-sm">
-                        <div className="flex justify-between">
-                          <span className="text-slate-400">Origin:</span>
-                          <span className="text-white">Year {sp.yearOfOrigin}</span>
-                        </div>
-                        {sp.yearOfSentience && (
-                          <div className="flex justify-between">
-                            <span className="text-slate-400">Sentience:</span>
-                            <span className="text-white">Year {sp.yearOfSentience}</span>
-                          </div>
-                        )}
-                        {sp.yearOfFirstCivilization && (
-                          <div className="flex justify-between">
-                            <span className="text-slate-400">First Civilization:</span>
-                            <span className="text-white">Year {sp.yearOfFirstCivilization}</span>
-                          </div>
-                        )}
-                        {sp.yearOfSpaceflight && (
-                          <div className="flex justify-between">
-                            <span className="text-slate-400">Spaceflight:</span>
-                            <span className="text-white">Year {sp.yearOfSpaceflight}</span>
-                          </div>
-                        )}
-                        {sp.extinct && (
-                          <div className="flex justify-between">
-                            <span className="text-slate-400">Extinct:</span>
-                            <span className="text-red-400">Year {sp.yearOfExtinction}</span>
-                          </div>
-                        )}
-                      </div>
-
-                      {sp.traits && (sp.traits as any).length > 0 && (
-                        <div className="mt-3 flex flex-wrap gap-2">
-                          {(sp.traits as string[]).map((trait: string) => (
-                            <span
-                              key={trait}
-                              className="text-xs bg-blue-900 text-blue-200 px-2 py-1 rounded"
-                            >
-                              {trait}
-                            </span>
-                          ))}
-                        </div>
-                      )}
+          <TabsContent value="planets" className="space-y-4">
+            {planets.length === 0 ? (
+              <Card className="bg-slate-800 border-slate-700">
+                <CardContent className="pt-6">
+                  <p className="text-slate-400">No planets found.</p>
+                </CardContent>
+              </Card>
+            ) : (
+              planets.map((planet) => (
+                <Card key={planet.id} className="bg-slate-800 border-slate-700">
+                  <CardHeader>
+                    <div>
+                      <CardTitle className="text-white">{planet.name}</CardTitle>
+                      <p className="text-sm text-slate-400">{planet.starSystemName}</p>
                     </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <div>
+                      <p className="text-slate-400 text-sm">Type</p>
+                      <p className="text-white capitalize">{planet.planetType}</p>
+                    </div>
+                    <div>
+                      <p className="text-slate-400 text-sm">Habitability</p>
+                      <div className="w-full bg-slate-700 rounded-full h-2 mt-1">
+                        <div
+                          className="bg-green-500 h-2 rounded-full"
+                          style={{ width: `${planet.habitability}%` }}
+                        />
+                      </div>
+                      <p className="text-white text-sm mt-1">{planet.habitability.toFixed(1)}%</p>
+                    </div>
+                    {planet.description && (
+                      <div>
+                        <p className="text-slate-400 text-sm">Description</p>
+                        <p className="text-slate-100 text-sm">{planet.description}</p>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              ))
+            )}
           </TabsContent>
 
-          {/* Planets Tab */}
-          <TabsContent value="planets" className="space-y-4">
-            <Card className="bg-slate-800 border-slate-700">
-              <CardHeader>
-                <CardTitle className="text-white">Planetary Systems</CardTitle>
-                <CardDescription className="text-slate-400">
-                  {planets.length} planets across {new Set(planets.map((p) => p.starSystemName)).size} star systems
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {planets.map((planet) => (
-                    <div
-                      key={planet.id}
-                      className="p-4 bg-slate-700 rounded-lg border border-slate-600 hover:border-slate-500 transition-all"
-                    >
-                      <div className="mb-3">
-                        <h3 className="font-semibold text-white">{planet.name}</h3>
-                        <p className="text-xs text-slate-400">{planet.starSystemName}</p>
-                      </div>
-
-                      <div className="space-y-2 text-sm">
-                        <div className="flex justify-between">
-                          <span className="text-slate-400">Type:</span>
-                          <span className="text-white capitalize">{planet.planetType}</span>
+          <TabsContent value="timeline" className="space-y-4">
+            {events.length === 0 ? (
+              <Card className="bg-slate-800 border-slate-700">
+                <CardContent className="pt-6">
+                  <p className="text-slate-400">No events recorded.</p>
+                </CardContent>
+              </Card>
+            ) : (
+              events
+                .sort((a, b) => a.year - b.year)
+                .map((event) => (
+                  <Card key={event.id} className="bg-slate-800 border-slate-700">
+                    <CardHeader>
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <p className="text-blue-400 text-sm font-semibold">Year {event.year}</p>
+                          <CardTitle className="text-white">{event.title}</CardTitle>
                         </div>
-                        <div className="flex justify-between">
-                          <span className="text-slate-400">Habitability:</span>
-                          <div className="flex items-center gap-2">
-                            <div className="w-24 h-2 bg-slate-600 rounded-full overflow-hidden">
-                              <div
-                                className="h-full bg-green-500"
-                                style={{ width: `${planet.habitability}%` }}
-                              />
-                            </div>
-                            <span className="text-white">{planet.habitability}%</span>
-                          </div>
+                        <div className="flex items-center gap-2">
+                          <span className="px-2 py-1 bg-purple-900 text-purple-200 text-xs rounded capitalize">
+                            {event.eventType.replace(/-/g, " ")}
+                          </span>
+                          <span className="px-2 py-1 bg-yellow-900 text-yellow-200 text-xs rounded">
+                            {event.importance}/10
+                          </span>
                         </div>
                       </div>
-
-                      {planet.description && (
-                        <p className="text-sm text-slate-300 mt-3">{planet.description}</p>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-slate-100 text-sm">{event.description}</p>
+                    </CardContent>
+                  </Card>
+                ))
+            )}
           </TabsContent>
         </Tabs>
       </div>
