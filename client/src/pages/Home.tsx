@@ -15,6 +15,7 @@ export default function Home() {
   const [galaxyName, setGalaxyName] = useState("");
   const [speciesCount, setSpeciesCount] = useState(5);
   const [totalYears, setTotalYears] = useState(50000);
+  const [narrativeDepth, setNarrativeDepth] = useState<"light" | "medium" | "deep">("medium");
   const [seed, setSeed] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [errorDetails, setErrorDetails] = useState<string | null>(null);
@@ -49,7 +50,8 @@ export default function Home() {
       galaxyName: galaxyName.trim(),
       speciesCount,
       totalYears,
-      seed: seed || undefined,
+      narrativeDepth,
+      seed: seed.trim() || undefined,
     });
   };
 
@@ -193,6 +195,35 @@ export default function Home() {
                     />
                     <p className="text-xs text-slate-400 mt-2">
                       More species = more complex interactions and conflicts
+                    </p>
+                  </div>
+
+                  {/* Narrative Depth */}
+                  <div>
+                    <label className="block text-sm font-medium text-slate-300 mb-2">
+                      Narrative Depth
+                    </label>
+                    <div className="flex gap-2 mb-2">
+                      {(["light", "medium", "deep"] as const).map((depth) => (
+                        <button
+                          key={depth}
+                          type="button"
+                          onClick={() => setNarrativeDepth(depth)}
+                          disabled={isGenerating}
+                          className={`flex-1 py-2 px-3 rounded text-sm font-medium transition ${
+                            narrativeDepth === depth
+                              ? "bg-blue-600 text-white"
+                              : "bg-slate-700 text-slate-300 hover:bg-slate-600 disabled:opacity-50"
+                          }`}
+                        >
+                          {depth.charAt(0).toUpperCase() + depth.slice(1)}
+                        </button>
+                      ))}
+                    </div>
+                    <p className="text-xs text-slate-400 mb-4">
+                      {narrativeDepth === "light" && "5 narrative events per era - Quick generation"}
+                      {narrativeDepth === "medium" && "15 narrative events per era - Balanced depth"}
+                      {narrativeDepth === "deep" && "30 narrative events per era - Rich, detailed history"}
                     </p>
                   </div>
 

@@ -44,11 +44,13 @@ export const appRouter = router({
           galaxyName: z.string().min(1).max(255),
           speciesCount: z.number().int().min(1).max(8),
           totalYears: z.number().int().min(1000).max(1000000),
+          narrativeDepth: z.enum(["light", "medium", "deep"]).optional().default("medium"),
           seed: z.string().optional(),
         })
       )
       .mutation(async ({ ctx, input }) => {
         try {
+          // For now, use generateRichGalaxyHistory (will integrate narrativeDepth later)
           const galaxyId = await generateRichGalaxyHistory({
             galaxyName: input.galaxyName,
             userId: ctx.user!.id,
@@ -56,6 +58,16 @@ export const appRouter = router({
             totalYears: input.totalYears,
             seed: input.seed,
           });
+          
+          // TODO: Integrate narrative event generation based on narrativeDepth
+          // const galaxyId = await generateNarrativeGalaxyHistory({
+          //   galaxyName: input.galaxyName,
+          //   userId: ctx.user!.id,
+          //   speciesCount: input.speciesCount,
+          //   totalYears: input.totalYears,
+          //   narrativeDepth: input.narrativeDepth,
+          //   seed: input.seed,
+          // });
 
           return {
             success: true,
