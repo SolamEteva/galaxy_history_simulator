@@ -3,7 +3,8 @@ import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import { z } from "zod";
-import { generateRichGalaxyHistory } from "./simulationRich";
+import { generateHardenedGalaxyHistory } from "./simulationHardened";
+import { ErrorLogger } from "./errorHandling";
 import { debugRouter } from "./debugRouter";
 import {
   getUserGalaxies,
@@ -50,34 +51,28 @@ export const appRouter = router({
       )
       .mutation(async ({ ctx, input }) => {
         try {
-          // For now, use generateRichGalaxyHistory (will integrate narrativeDepth later)
-          const galaxyId = await generateRichGalaxyHistory({
+          const result = await generateHardenedGalaxyHistory({
             galaxyName: input.galaxyName,
             userId: ctx.user!.id,
             speciesCount: input.speciesCount,
             totalYears: input.totalYears,
+            narrativeDepth: input.narrativeDepth,
             seed: input.seed,
           });
-          
-          // TODO: Integrate narrative event generation based on narrativeDepth
-          // const galaxyId = await generateNarrativeGalaxyHistory({
-          //   galaxyName: input.galaxyName,
-          //   userId: ctx.user!.id,
-          //   speciesCount: input.speciesCount,
-          //   totalYears: input.totalYears,
-          //   narrativeDepth: input.narrativeDepth,
-          //   seed: input.seed,
-          // });
+
+          if (!result.ok) {
+            ErrorLogger.logUnknown(result.error, "galaxy.generate");
+            throw new Error(`Galaxy generation failed: ${result.error.message}`);
+          }
 
           return {
             success: true,
-            galaxyId,
+            galaxyId: result.value,
             message: "Galaxy history generated successfully",
           };
         } catch (error) {
           const errorMessage = error instanceof Error ? error.message : String(error);
           console.error("Error generating galaxy:", error);
-          console.error("Error message:", errorMessage);
           throw new Error(`Galaxy generation failed: ${errorMessage}`);
         }
       }),
