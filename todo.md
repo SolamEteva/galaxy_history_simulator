@@ -61,6 +61,14 @@
 - [x] Design and implement EventConnection table (for cause-effect relationships)
 - [x] Design and implement HistoryDocument table
 
+## Unit Testing (Current Priority)
+- [x] Write tests for error handling framework (validation, retry, timeout)
+- [x] Write tests for narrative event generator error scenarios
+- [ ] Write tests for simulation hardened pipeline error recovery
+- [ ] Write tests for database operations and error handling
+- [x] Run all tests and ensure they pass (33/33 error handling tests passed)
+- [ ] Add integration tests for end-to-end galaxy generation
+
 ## Testing & Refinement
 - [ ] Test simulation engine with sample parameters
 - [ ] Test LLM integration and event generation quality
