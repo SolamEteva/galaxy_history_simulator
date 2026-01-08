@@ -6,6 +6,7 @@ import { z } from "zod";
 import { generateHardenedGalaxyHistory } from "./simulationHardened";
 import { ErrorLogger } from "./errorHandling";
 import { debugRouter } from "./debugRouter";
+import { exportRouter } from "./exportRouter";
 import {
   getUserGalaxies,
   getGalaxy,
@@ -22,6 +23,7 @@ import {
 export const appRouter = router({
   system: systemRouter,
   debug: debugRouter,
+  export: exportRouter,
 
   auth: router({
     me: publicProcedure.query((opts) => opts.ctx.user),

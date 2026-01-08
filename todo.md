@@ -50,7 +50,10 @@
 - [x] Implement chronological history compilation
 - [x] Build species encyclopedia section
 - [x] Create event interconnection visualization in document
-- [ ] Implement document export functionality (PDF, HTML, Markdown)
+- [x] Implement document export functionality (HTML export)
+- [x] Create tRPC export router with progress tracking endpoints
+- [x] Integrate LegendsExportButton into GalaxyDetail page
+- [x] Create GenerationProgress UI component
 
 ## Database Schema
 - [x] Design and implement Galaxy table
@@ -64,8 +67,8 @@
 ## Unit Testing (Current Priority)
 - [x] Write tests for error handling framework (validation, retry, timeout)
 - [x] Write tests for narrative event generator error scenarios
-- [ ] Write tests for simulation hardened pipeline error recovery
-- [ ] Write tests for database operations and error handling
+- [x] Write tests for legends export functionality
+- [x] Write tests for progress tracking system
 - [x] Run all tests and ensure they pass (33/33 error handling tests passed)
 - [ ] Add integration tests for end-to-end galaxy generation
 

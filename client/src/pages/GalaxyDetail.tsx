@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { useState } from "react";
+import { LegendsExportButton } from "@/components/LegendsExportButton";
 
 export default function GalaxyDetail() {
   const { galaxyId } = useParams<{ galaxyId: string }>();
@@ -57,8 +58,13 @@ export default function GalaxyDetail() {
         </Button>
 
         <div className="bg-gradient-to-r from-blue-900 to-purple-900 rounded-lg p-6 border border-blue-700 mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">{galaxy.name}</h1>
-          <p className="text-blue-200 mb-4">{galaxy.description}</p>
+          <div className="flex justify-between items-start mb-4">
+            <div>
+              <h1 className="text-4xl font-bold text-white mb-2">{galaxy.name}</h1>
+              <p className="text-blue-200">{galaxy.description}</p>
+            </div>
+            <LegendsExportButton galaxyId={galaxy.id} galaxyName={galaxy.name} />
+          </div>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm">
             <div>
               <p className="text-blue-300">Status</p>
