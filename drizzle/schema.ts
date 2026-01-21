@@ -201,3 +201,244 @@ export const simulationLogs = mysqlTable("simulationLogs", {
 
 export type SimulationLog = typeof simulationLogs.$inferSelect;
 export type InsertSimulationLog = typeof simulationLogs.$inferInsert;
+
+/**
+ * NotableFigures table - represents significant historical figures
+ */
+export const notableFigures = mysqlTable("notableFigures", {
+  id: int("id").autoincrement().primaryKey(),
+  galaxyId: int("galaxyId").notNull(),
+  civilizationId: int("civilizationId").notNull(),
+  speciesId: int("speciesId").notNull(),
+  
+  name: varchar("name", { length: 255 }).notNull(),
+  nameOrigin: varchar("nameOrigin", { length: 255 }),
+  birthYear: int("birthYear").notNull(),
+  deathYear: int("deathYear"),
+  
+  archetype: varchar("archetype", { length: 50 }).notNull(), // monarch, general, prophet, scientist, etc.
+  primaryRole: varchar("primaryRole", { length: 100 }),
+  secondaryRoles: json("secondaryRoles"), // JSON array of secondary roles
+  
+  attributes: json("attributes").notNull(), // {charisma, intellect, courage, wisdom, creativity, ambition, compassion, ruthlessness}
+  
+  influence: int("influence").default(0).notNull(),
+  legacyScore: int("legacyScore").default(0).notNull(),
+  
+  mentors: json("mentors"), // JSON array of figure IDs
+  students: json("students"),
+  allies: json("allies"),
+  rivals: json("rivals"),
+  
+  family: json("family"), // {parents, children, spouse, siblings}
+  generation: int("generation").default(0).notNull(),
+  lineageId: varchar("lineageId", { length: 36 }),
+  
+  birthEventId: int("birthEventId"),
+  deathEventId: int("deathEventId"),
+  majorEvents: json("majorEvents"), // JSON array of event IDs
+  
+  speciesTraits: json("speciesTraits"), // JSON array of trait names
+  culturalTraits: json("culturalTraits"),
+  
+  generatedBy: varchar("generatedBy", { length: 50 }).default("llm").notNull(), // event, genealogy, opportunity, user
+  generationPrompt: text("generationPrompt"),
+  llmModel: varchar("llmModel", { length: 255 }),
+  confidenceScore: decimal("confidenceScore", { precision: 3, scale: 2 }).default("0.00").notNull(),
+  
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type NotableFigure = typeof notableFigures.$inferSelect;
+export type InsertNotableFigure = typeof notableFigures.$inferInsert;
+
+/**
+ * Achievements table - represents significant accomplishments of figures
+ */
+export const achievements = mysqlTable("achievements", {
+  id: int("id").autoincrement().primaryKey(),
+  figureId: int("figureId").notNull(),
+  galaxyId: int("galaxyId").notNull(),
+  
+  year: int("year").notNull(),
+  title: varchar("title", { length: 255 }).notNull(),
+  description: text("description").notNull(),
+  achievementType: varchar("achievementType", { length: 50 }).notNull(), // military_victory, discovery, innovation, etc.
+  
+  civilizationImpact: int("civilizationImpact"), // 0-100
+  historicalSignificance: int("historicalSignificance"), // 0-100
+  
+  triggeredEvents: json("triggeredEvents"), // JSON array of event IDs
+  enabledTechnologies: json("enabledTechnologies"),
+  influencedBeliefs: json("influencedBeliefs"),
+  
+  collaborators: json("collaborators"), // JSON array of figure IDs
+  opposition: json("opposition"),
+  
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type Achievement = typeof achievements.$inferSelect;
+export type InsertAchievement = typeof achievements.$inferInsert;
+
+/**
+ * Genealogies table - represents family lineages
+ */
+export const genealogies = mysqlTable("genealogies", {
+  id: int("id").autoincrement().primaryKey(),
+  galaxyId: int("galaxyId").notNull(),
+  civilizationId: int("civilizationId").notNull(),
+  
+  lineageName: varchar("lineageName", { length: 255 }).notNull(),
+  founderFigureId: int("founderFigureId").notNull(),
+  
+  generations: json("generations").notNull(), // {generation: number, members: [figureIds]}
+  
+  dominantTraits: json("dominantTraits"), // JSON array of trait names
+  culturalInfluence: int("culturalInfluence"), // 0-100
+  powerDuration: int("powerDuration"), // years
+  
+  majorAchievements: json("majorAchievements"),
+  conflicts: json("conflicts"), // JSON array of conflict descriptions
+  alliances: json("alliances"),
+  
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type Genealogy = typeof genealogies.$inferSelect;
+export type InsertGenealogy = typeof genealogies.$inferInsert;
+
+/**
+ * HistoricalMemory table - tracks how figures are remembered over time
+ */
+export const historicalMemory = mysqlTable("historicalMemory", {
+  id: int("id").autoincrement().primaryKey(),
+  figureId: int("figureId").notNull(),
+  civilizationId: int("civilizationId").notNull(),
+  
+  memoryStrength: decimal("memoryStrength", { precision: 3, scale: 2 }).default("1.00").notNull(), // 0.0-1.0
+  publicPerception: varchar("publicPerception", { length: 100 }), // Hero, Tyrant, Sage, etc.
+  mythologization: decimal("mythologization", { precision: 3, scale: 2 }).default("0.00").notNull(), // 0.0-1.0
+  
+  lastMentionedYear: int("lastMentionedYear"),
+  mentionCount: int("mentionCount").default(0).notNull(),
+  
+  currentInfluence: decimal("currentInfluence", { precision: 3, scale: 2 }), // 0.0-1.0
+  
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type HistoricalMemory = typeof historicalMemory.$inferSelect;
+export type InsertHistoricalMemory = typeof historicalMemory.$inferInsert;
+
+/**
+ * EventAuthenticity table - validation metrics for events
+ */
+export const eventAuthenticity = mysqlTable("eventAuthenticity", {
+  id: int("id").autoincrement().primaryKey(),
+  eventId: int("eventId").notNull().unique(),
+  
+  unityCoefficient: decimal("unityCoefficient", { precision: 3, scale: 2 }).notNull(), // 0.0-1.0
+  constraintSatisfaction: decimal("constraintSatisfaction", { precision: 3, scale: 2 }).notNull(),
+  sacredGapScore: decimal("sacredGapScore", { precision: 3, scale: 2 }).notNull(),
+  authenticityScore: decimal("authenticityScore", { precision: 3, scale: 2 }).notNull(),
+  confidenceScore: decimal("confidenceScore", { precision: 3, scale: 2 }).notNull(),
+  
+  validationViolations: json("validationViolations"), // JSON array of violation descriptions
+  generationPrompt: text("generationPrompt"),
+  llmModel: varchar("llmModel", { length: 255 }),
+  
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type EventAuthenticity = typeof eventAuthenticity.$inferSelect;
+export type InsertEventAuthenticity = typeof eventAuthenticity.$inferInsert;
+
+/**
+ * EventHarmonic table - harmonic properties of events
+ */
+export const eventHarmonic = mysqlTable("eventHarmonic", {
+  id: int("id").autoincrement().primaryKey(),
+  eventId: int("eventId").notNull().unique(),
+  
+  harmonyFrequency: decimal("harmonyFrequency", { precision: 6, scale: 2 }).notNull(), // 0-963 Hz
+  phaseCoherence: decimal("phaseCoherence", { precision: 3, scale: 2 }).notNull(), // 0.0-1.0
+  
+  resonanceVectorSound: decimal("resonanceVectorSound", { precision: 3, scale: 2 }), // Cultural impact
+  resonanceVectorLight: decimal("resonanceVectorLight", { precision: 3, scale: 2 }), // Discovery/revelation
+  resonanceVectorTime: decimal("resonanceVectorTime", { precision: 3, scale: 2 }), // Historical significance
+  
+  causalStrength: decimal("causalStrength", { precision: 3, scale: 2 }).notNull(), // 0.0-1.0
+  
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type EventHarmonic = typeof eventHarmonic.$inferSelect;
+export type InsertEventHarmonic = typeof eventHarmonic.$inferInsert;
+
+/**
+ * CivilizationHarmonic table - harmonic properties of civilizations
+ */
+export const civilizationHarmonic = mysqlTable("civilizationHarmonic", {
+  id: int("id").autoincrement().primaryKey(),
+  civilizationId: int("civilizationId").notNull().unique(),
+  
+  harmonyFrequency: decimal("harmonyFrequency", { precision: 6, scale: 2 }).notNull(), // 0-963 Hz
+  phaseCoherence: decimal("phaseCoherence", { precision: 3, scale: 2 }).notNull(), // 0.0-1.0
+  unityCoefficient: decimal("unityCoefficient", { precision: 3, scale: 2 }).notNull(), // 0.0-1.0
+  
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type CivilizationHarmonic = typeof civilizationHarmonic.$inferSelect;
+export type InsertCivilizationHarmonic = typeof civilizationHarmonic.$inferInsert;
+
+/**
+ * CivilizationRelationships table - relationships between civilizations in harmonic network
+ */
+export const civilizationRelationships = mysqlTable("civilizationRelationships", {
+  id: int("id").autoincrement().primaryKey(),
+  galaxyId: int("galaxyId").notNull(),
+  civilizationAId: int("civilizationAId").notNull(),
+  civilizationBId: int("civilizationBId").notNull(),
+  
+  alignment: decimal("alignment", { precision: 3, scale: 2 }).notNull(), // -1.0 to 1.0
+  harmonyDistance: decimal("harmonyDistance", { precision: 3, scale: 2 }).notNull(), // 0.0-1.0
+  causalCoupling: decimal("causalCoupling", { precision: 3, scale: 2 }).notNull(), // 0.0-1.0
+  
+  lastInteractionYear: int("lastInteractionYear"),
+  eventTypes: json("eventTypes"), // JSON array of event type names
+  
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type CivilizationRelationship = typeof civilizationRelationships.$inferSelect;
+export type InsertCivilizationRelationship = typeof civilizationRelationships.$inferInsert;
+
+/**
+ * CivilizationEvolution table - evolutionary fitness state of civilizations
+ */
+export const civilizationEvolution = mysqlTable("civilizationEvolution", {
+  id: int("id").autoincrement().primaryKey(),
+  civilizationId: int("civilizationId").notNull().unique(),
+  
+  survivalFitness: decimal("survivalFitness", { precision: 3, scale: 2 }).notNull(), // 0.0-1.0
+  culturalFitness: decimal("culturalFitness", { precision: 3, scale: 2 }).notNull(),
+  technologicalFitness: decimal("technologicalFitness", { precision: 3, scale: 2 }).notNull(),
+  expansionFitness: decimal("expansionFitness", { precision: 3, scale: 2 }).notNull(),
+  
+  expansionistStrategy: decimal("expansionistStrategy", { precision: 3, scale: 2 }).notNull(), // 0.0-1.0
+  peacefulStrategy: decimal("peacefulStrategy", { precision: 3, scale: 2 }).notNull(),
+  innovativeStrategy: decimal("innovativeStrategy", { precision: 3, scale: 2 }).notNull(),
+  culturalStrategy: decimal("culturalStrategy", { precision: 3, scale: 2 }).notNull(),
+  
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type CivilizationEvolution = typeof civilizationEvolution.$inferSelect;
+export type InsertCivilizationEvolution = typeof civilizationEvolution.$inferInsert;

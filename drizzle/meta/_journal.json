@@ -43,6 +43,13 @@
       "when": 1763057911131,
       "tag": "0005_lucky_trauma",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1768997053743,
+      "tag": "0006_rare_pixie",
+      "breakpoints": true
     }
   ]
 }
