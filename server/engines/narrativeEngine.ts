@@ -218,7 +218,7 @@ export class EvolutionaryAdaptationEngine {
     // Cultural fitness: belief alignment, cultural cohesion
     const culturalFitness = Math.min(
       1,
-      (civilization.unityCoefficient || 0.5) * 0.5 +
+      (civilization.unityCoefficient ?? 0.5) * 0.5 +
         (civilization.resources.culture / 100) * 0.5
     );
 
@@ -233,7 +233,7 @@ export class EvolutionaryAdaptationEngine {
     const expansionFitness = Math.min(
       1,
       (civilization.culturalInfluence / 10) * 0.5 +
-        (civilization.relationships?.size || 0) / 20 * 0.5
+        ((civilization.relationships?.size || 0) / 20) * 0.5
     );
 
     return {
@@ -278,9 +278,10 @@ export class EvolutionaryAdaptationEngine {
 
     // Clamp strategies to 0-1
     for (const key of Object.keys(civilization.strategy)) {
-      civilization.strategy[key as keyof typeof civilization.strategy] = Math.max(
+      const strategyKey = key as keyof typeof civilization.strategy;
+      civilization.strategy[strategyKey] = Math.max(
         0,
-        Math.min(1, civilization.strategy[key as keyof typeof civilization.strategy])
+        Math.min(1, civilization.strategy[strategyKey])
       );
     }
   }
@@ -326,7 +327,7 @@ export class ConsciousnessAwareValidator {
    */
   calculateUnityCoefficient(event: EventNode, civilization: CivilizationState): number {
     // Base unity from civilization state
-    let unity = civilization.unityCoefficient || 0.5;
+    let unity = (civilization.unityCoefficient ?? 0.5) as number;
 
     // Event type alignment with civilization values
     const alignmentBonus = this.getEventAlignmentBonus(event.eventType, civilization);
@@ -549,7 +550,7 @@ export class LLMNarrativeGenerator {
       });
     }
 
-    if (civilization.unityCoefficient < 0.3) {
+    if ((civilization.unityCoefficient ?? 0.5) < 0.3) {
       opportunities.push({
         type: "cultural_crisis",
         reason: "Low internal unity",
@@ -610,7 +611,8 @@ NARRATIVE:
         ],
       });
 
-      return response.choices[0].message.content || event.description;
+      const content = response.choices[0].message.content;
+      return typeof content === 'string' ? content : event.description;
     } catch (error) {
       console.error("LLM generation failed:", error);
       return event.description;
