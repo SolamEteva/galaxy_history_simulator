@@ -7,6 +7,7 @@ import { getDb } from "./db";
 import { galaxies, species, planets, events, civilizations } from "../drizzle/schema";
 import { eq, desc } from "drizzle-orm";
 import { invokeLLM } from "./_core/llm";
+import { LLMNarrativeGenerator } from "./engines/narrativeEngine";
 
 export interface RichSimulationConfig {
   galaxyName: string;
@@ -248,12 +249,41 @@ export async function generateRichGalaxyHistory(config: RichSimulationConfig): P
         .join(" and ");
 
       try {
+        const eventTitle = `${eventType.split("-").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")} (Year ${year})`;
+        let eventDescription = `A significant ${eventType} event involving ${speciesNames}. This event shaped the course of galactic history.`;
+        
+        try {
+          const generator = new LLMNarrativeGenerator();
+          const mockCivilization = {
+            id: uniqueSpecies[0] || 0,
+            galaxyId,
+            speciesId: uniqueSpecies[0] || 0,
+            name: speciesNames,
+            foundedYear: year - 100,
+            currentYear: year,
+            status: "classical" as const,
+            resources: { population: 1000000000, food: 100, technology: 100, culture: 100, military: 100 },
+            strategy: { expansionist: 0.5, peaceful: 0.5, innovative: 0.5, cultural: 0.5 },
+            technologyLevel: 5,
+            militaryStrength: 5,
+            culturalInfluence: 5,
+            unityCoefficient: 0.7,
+          };
+          
+          const opportunities = generator.detectOpportunities(mockCivilization);
+          if (opportunities.length > 0) {
+            eventDescription = `${opportunities[0].reason}. The ${speciesNames} experience a ${eventType} event in year ${year}, marking a pivotal moment in their civilization's development.`;
+          }
+        } catch (llmError) {
+          console.debug(`[RichSim] Narrative generation skipped for event at year ${year}`);
+        }
+        
         await db.insert(events).values({
           galaxyId,
           year,
           eventType: eventType as any,
-          title: `${eventType.split("-").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")} (Year ${year})`,
-          description: `A significant ${eventType} event involving ${speciesNames}. This event shaped the course of galactic history.`,
+          title: eventTitle,
+          description: eventDescription,
           speciesIds: uniqueSpecies,
           planetIds: Array.from(planetMap.keys()).slice(0, 2),
           civilizationIds: [],

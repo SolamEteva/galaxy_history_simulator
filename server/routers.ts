@@ -7,6 +7,7 @@ import { generateHardenedGalaxyHistory } from "./simulationHardened";
 import { ErrorLogger } from "./errorHandling";
 import { debugRouter } from "./debugRouter";
 import { exportRouter } from "./exportRouter";
+import { narrativeRouter } from "./routers/narrative";
 import {
   getUserGalaxies,
   getGalaxy,
@@ -24,6 +25,7 @@ export const appRouter = router({
   system: systemRouter,
   debug: debugRouter,
   export: exportRouter,
+  narrative: narrativeRouter,
 
   auth: router({
     me: publicProcedure.query((opts) => opts.ctx.user),
