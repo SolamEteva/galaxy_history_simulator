@@ -2,11 +2,11 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, Sparkles, BookOpen, Zap } from "lucide-react";
+import { Loader2, Sparkles, BookOpen, Zap, Users, Calendar, TreePine } from "lucide-react";
 import { APP_LOGO, APP_TITLE, getLoginUrl } from "@/const";
 import { trpc } from "@/lib/trpc";
 import { useState } from "react";
-import { useLocation } from "wouter";
+import { useLocation, Link } from "wouter";
 import { toast } from "sonner";
 
 export default function Home() {
@@ -147,9 +147,30 @@ export default function Home() {
               Welcome, <span className="text-white font-semibold">{user?.name}</span>
             </div>
           </div>
-          <p className="text-slate-300">
+          <p className="text-slate-300 mb-4">
             Generate pre-computed galaxy histories with thousands of years of interconnected events
           </p>
+          {/* Navigation Links */}
+          <div className="flex gap-3 flex-wrap">
+            <Link href="/genealogy">
+              <Button variant="outline" size="sm" className="border-slate-600 text-slate-300 hover:bg-slate-700">
+                <TreePine className="w-4 h-4 mr-2" />
+                Genealogies
+              </Button>
+            </Link>
+            <Link href="/figures">
+              <Button variant="outline" size="sm" className="border-slate-600 text-slate-300 hover:bg-slate-700">
+                <Users className="w-4 h-4 mr-2" />
+                Notable Figures
+              </Button>
+            </Link>
+            <Link href="/timeline">
+              <Button variant="outline" size="sm" className="border-slate-600 text-slate-300 hover:bg-slate-700">
+                <Calendar className="w-4 h-4 mr-2" />
+                Timeline
+              </Button>
+            </Link>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
