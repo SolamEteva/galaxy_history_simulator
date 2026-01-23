@@ -80,6 +80,23 @@
 - [ ] Refine event generation prompts based on output quality
 - [ ] Performance optimization for large simulations
 
+## UI Components for Genealogy, Search & Timeline (NEW)
+- [x] Build GenealogyTreeVisualizer component with interactive family lineages
+- [x] Implement trait inheritance visualization in genealogy tree
+- [x] Add succession chain display showing leadership transitions
+- [x] Create FigureSearchPanel component with multi-filter support
+- [x] Implement archetype filtering for figure search
+- [x] Add civilization and time period filters to search
+- [x] Build achievement type filtering
+- [x] Create EventTimelineWithFigures component
+- [x] Add figure attribution to event display
+- [x] Show influence metrics on timeline
+- [x] Display achievement compound effects over time
+- [x] Create figure-event relationship visualization
+- [x] Add interactive tooltips showing figure details on hover
+- [ ] Implement figure profile modal from timeline clicks
+- [ ] Add genealogy tree modal from timeline figure references
+
 ## Deployment & Documentation
 - [ ] Create user guide for simulation parameters
 - [ ] Document API endpoints and data structures
