@@ -8,6 +8,7 @@ import { ErrorLogger } from "./errorHandling";
 import { debugRouter } from "./debugRouter";
 import { exportRouter } from "./exportRouter";
 import { narrativeRouter } from "./routers/narrative";
+import { agentRouter } from "./routers/agent";
 import {
   getUserGalaxies,
   getGalaxy,
@@ -26,6 +27,7 @@ export const appRouter = router({
   debug: debugRouter,
   export: exportRouter,
   narrative: narrativeRouter,
+  agent: agentRouter,
 
   auth: router({
     me: publicProcedure.query((opts) => opts.ctx.user),
