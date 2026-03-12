@@ -111,6 +111,20 @@
 - [x] Add task history display
 - [x] Integrate agent router into main tRPC router
 
+## Advanced Agent Features (COMPLETE)
+- [x] Create GitHub Actions workflow integration module
+- [x] Implement webhook handlers for GitHub Actions events
+- [x] Add task creation from GitHub issues/PRs
+- [x] Build WebSocket server for real-time updates
+- [x] Implement AgentDashboard WebSocket client
+- [x] Add real-time task status streaming
+- [x] Create TaskQueueManager component with drag-and-drop
+- [x] Implement task reordering persistence
+- [x] Add estimated completion time calculations
+- [x] Build task priority visualization
+- [x] Integrate all three features
+- [x] Test end-to-end workflows
+
 ## Deployment & Documentation
 - [ ] Create user guide for simulation parameters
 - [ ] Document API endpoints and data structures
