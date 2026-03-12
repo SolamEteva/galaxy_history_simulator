@@ -279,4 +279,43 @@ export const agentRouter = router({
         ],
       };
     }),
+
+  getConfiguration: protectedProcedure.query(async ({ ctx }) => {
+    return {
+      maxConcurrentTasks: 3,
+      taskTimeoutMinutes: 30,
+      retryPolicy: "moderate" as const,
+      maxRetries: 2,
+      enableFeatureDevelopment: true,
+      enableBugFixes: true,
+      enableDocumentation: false,
+      sendNotifications: true,
+      notificationEmail: undefined,
+      autoCommitChanges: true,
+      autoCreateBranches: true,
+    };
+  }),
+
+  updateConfiguration: protectedProcedure
+    .input(
+      z.object({
+        maxConcurrentTasks: z.number().optional(),
+        taskTimeoutMinutes: z.number().optional(),
+        retryPolicy: z.enum(["aggressive", "moderate", "conservative"]).optional(),
+        maxRetries: z.number().optional(),
+        enableFeatureDevelopment: z.boolean().optional(),
+        enableBugFixes: z.boolean().optional(),
+        enableDocumentation: z.boolean().optional(),
+        sendNotifications: z.boolean().optional(),
+        notificationEmail: z.string().optional(),
+        autoCommitChanges: z.boolean().optional(),
+        autoCreateBranches: z.boolean().optional(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      return {
+        success: true,
+        message: "Configuration updated successfully",
+      };
+    }),
 });

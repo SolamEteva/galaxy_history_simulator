@@ -2,7 +2,7 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, Sparkles, BookOpen, Zap, Users, Calendar, TreePine } from "lucide-react";
+import { Loader2, Sparkles, BookOpen, Zap, Users, Calendar, TreePine, Zap as ZapIcon } from "lucide-react";
 import { APP_LOGO, APP_TITLE, getLoginUrl } from "@/const";
 import { trpc } from "@/lib/trpc";
 import { useState } from "react";
@@ -168,6 +168,12 @@ export default function Home() {
               <Button variant="outline" size="sm" className="border-slate-600 text-slate-300 hover:bg-slate-700">
                 <Calendar className="w-4 h-4 mr-2" />
                 Timeline
+              </Button>
+            </Link>
+            <Link href="/agent">
+              <Button variant="outline" size="sm" className="border-slate-600 text-slate-300 hover:bg-slate-700">
+                <Zap className="w-4 h-4 mr-2" />
+                AI Agent
               </Button>
             </Link>
           </div>

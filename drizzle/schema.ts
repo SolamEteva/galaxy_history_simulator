@@ -442,3 +442,119 @@ export const civilizationEvolution = mysqlTable("civilizationEvolution", {
 
 export type CivilizationEvolution = typeof civilizationEvolution.$inferSelect;
 export type InsertCivilizationEvolution = typeof civilizationEvolution.$inferInsert;
+
+/**
+ * AgentTask table - represents tasks for the autonomous agent system
+ */
+export const agentTasks = mysqlTable("agentTasks", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  
+  title: varchar("title", { length: 255 }).notNull(),
+  description: text("description"),
+  category: mysqlEnum("category", ["feature", "bug-fix", "documentation", "optimization", "testing"]).notNull(),
+  priority: mysqlEnum("priority", ["low", "medium", "high", "critical"]).default("medium").notNull(),
+  
+  status: mysqlEnum("status", ["pending", "in-progress", "completed", "failed", "cancelled"]).default("pending").notNull(),
+  assignedAgent: varchar("assignedAgent", { length: 64 }),
+  
+  estimatedHours: decimal("estimatedHours", { precision: 5, scale: 2 }),
+  actualHours: decimal("actualHours", { precision: 5, scale: 2 }),
+  
+  completionPercentage: int("completionPercentage").default(0).notNull(),
+  successMetrics: json("successMetrics"), // JSON object with success criteria
+  
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  startedAt: timestamp("startedAt"),
+  completedAt: timestamp("completedAt"),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type AgentTask = typeof agentTasks.$inferSelect;
+export type InsertAgentTask = typeof agentTasks.$inferInsert;
+
+/**
+ * AgentWorkflow table - represents workflow executions
+ */
+export const agentWorkflows = mysqlTable("agentWorkflows", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  taskId: int("taskId").notNull(),
+  
+  workflowType: mysqlEnum("workflowType", ["feature-development", "bug-fix", "documentation"]).notNull(),
+  
+  status: mysqlEnum("status", ["pending", "running", "completed", "failed"]).default("pending").notNull(),
+  currentStep: int("currentStep").default(0).notNull(),
+  totalSteps: int("totalSteps").notNull(),
+  
+  steps: json("steps"), // JSON array of workflow steps with status
+  executionLog: text("executionLog"), // Detailed execution log
+  
+  startedAt: timestamp("startedAt"),
+  completedAt: timestamp("completedAt"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type AgentWorkflow = typeof agentWorkflows.$inferSelect;
+export type InsertAgentWorkflow = typeof agentWorkflows.$inferInsert;
+
+/**
+ * AgentConfiguration table - stores agent settings and preferences
+ */
+export const agentConfigurations = mysqlTable("agentConfigurations", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull().unique(),
+  
+  maxConcurrentTasks: int("maxConcurrentTasks").default(3 as any).notNull(),
+  taskTimeoutMinutes: int("taskTimeoutMinutes").default(30 as any).notNull(),
+  
+  retryPolicy: mysqlEnum("retryPolicy", ["aggressive", "moderate", "conservative"]).default("moderate").notNull(),
+  maxRetries: int("maxRetries").default(2 as any).notNull(),
+  
+  enableFeatureDevelopment: boolean("enableFeatureDevelopment").default(true).notNull(),
+  enableBugFixes: boolean("enableBugFixes").default(true).notNull(),
+  enableDocumentation: boolean("enableDocumentation").default(false).notNull(),
+  
+  sendNotifications: boolean("sendNotifications").default(true).notNull(),
+  notificationEmail: varchar("notificationEmail", { length: 320 }),
+  
+  autoCommitChanges: boolean("autoCommitChanges").default(true).notNull(),
+  autoCreateBranches: boolean("autoCreateBranches").default(true).notNull(),
+  
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type AgentConfiguration = typeof agentConfigurations.$inferSelect;
+export type InsertAgentConfiguration = typeof agentConfigurations.$inferInsert;
+
+/**
+ * AgentExecutionHistory table - tracks agent execution metrics
+ */
+export const agentExecutionHistory = mysqlTable("agentExecutionHistory", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  
+  executionDate: timestamp("executionDate").defaultNow().notNull(),
+  
+  tasksCompleted: int("tasksCompleted").default(0 as any).notNull(),
+  tasksFailed: int("tasksFailed").default(0 as any).notNull(),
+  tasksSkipped: int("tasksSkipped").default(0 as any).notNull(),
+  
+  totalExecutionTimeMinutes: decimal("totalExecutionTimeMinutes", { precision: 8, scale: 2 }).default("0" as any).notNull(),
+  averageTaskTimeMinutes: decimal("averageTaskTimeMinutes", { precision: 8, scale: 2 }),
+  
+  successRate: decimal("successRate", { precision: 3, scale: 2 }), // 0.0-1.0
+  
+  cpuUsagePercent: decimal("cpuUsagePercent", { precision: 5, scale: 2 }),
+  memoryUsagePercent: decimal("memoryUsagePercent", { precision: 5, scale: 2 }),
+  diskUsagePercent: decimal("diskUsagePercent", { precision: 5, scale: 2 }),
+  
+  notes: text("notes"),
+  
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type AgentExecutionHistory = typeof agentExecutionHistory.$inferSelect;
+export type InsertAgentExecutionHistory = typeof agentExecutionHistory.$inferInsert;

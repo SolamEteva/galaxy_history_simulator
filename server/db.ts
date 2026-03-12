@@ -19,6 +19,14 @@ import {
   InsertEventConnection,
   InsertSimulationLog,
   InsertHistoryDocument,
+  agentTasks,
+  agentWorkflows,
+  agentConfigurations,
+  agentExecutionHistory,
+  InsertAgentTask,
+  InsertAgentWorkflow,
+  InsertAgentConfiguration,
+  InsertAgentExecutionHistory,
 } from "../drizzle/schema";
 import { ENV } from "./_core/env";
 
@@ -35,6 +43,18 @@ export async function getDb() {
     }
   }
   return _db;
+}
+
+// Export agent tables for use in db helpers
+export {
+  agentTasks,
+  agentWorkflows,
+  agentConfigurations,
+  agentExecutionHistory,
+  InsertAgentTask,
+  InsertAgentWorkflow,
+  InsertAgentConfiguration,
+  InsertAgentExecutionHistory,
 }
 
 // ============ USER QUERIES ============
