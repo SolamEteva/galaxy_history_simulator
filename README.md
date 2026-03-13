@@ -6,7 +6,7 @@
 
 The Galaxy History Simulator transforms the creative vision of Dwarf Fortress-style world generation into an interactive, web-based experience. Rather than simulating in real-time, the system pre-computes entire galaxy histories offline, generating rich narratives through a harmonious blend of evolutionary algorithms, causal graph reasoning, and LLM-driven storytelling.
 
-**Key Innovation**: The system operates as a **fully autonomous AI Agent** (Mossbot-based) that can work on the project continuously, even when the user is offline. This transforms the development from a stop-start co-creative process into a dynamic, self-improving system that evolves the simulation engine and narrative quality over time.
+**Key Innovation**: The system operates as a **fully autonomous AI Agent** (Cosmic Forge-based) that can work on the project continuously, even when the user is offline. This transforms the development from a stop-start co-creative process into a dynamic, self-improving system that evolves the simulation engine and narrative quality over time.
 
 ## Architecture
 
@@ -47,13 +47,13 @@ The core narrative system is built on five interconnected layers that work in co
 - `FigureProfile` - Rich figure detail display with expandable sections
 - `EventTimelineWithFigures` - Chronological events with figure attribution
 
-## AI Agent System (Mossbot Integration)
+## AI Agent System (Cosmic Forge Integration)
 
 The Galaxy History Simulator now includes a fully autonomous AI Agent system that enables continuous, unattended development and improvement of the simulation engine.
 
 ### How It Works
 
-The Mossbot-based agent operates as a specialized development assistant that can:
+The Cosmic Forge agent operates as a specialized development assistant that can:
 
 1. **Autonomous Feature Development** - Implement new features and improvements based on a prioritized task queue
 2. **Continuous Testing & Validation** - Run comprehensive test suites to ensure quality
@@ -339,7 +339,7 @@ The project welcomes contributions through:
 - ✅ Database schema and migrations
 
 ### Phase 2: Enhancement (In Progress)
-- 🔄 Mossbot AI Agent integration
+- 🔄 Cosmic Forge AI Agent integration
 - 🔄 Autonomous development workflows
 - 🔄 Agent status dashboard
 - 🔄 Advanced figure genealogies

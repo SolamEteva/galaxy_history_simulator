@@ -1,7 +1,7 @@
 /**
  * Agent tRPC Router
  * 
- * Provides API endpoints for managing the Mossbot AI Agent system
+ * Provides API endpoints for managing the Cosmic Forge AI Agent system
  */
 
 import { router, publicProcedure, protectedProcedure } from "../_core/trpc";

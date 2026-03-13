@@ -97,33 +97,27 @@
 - [ ] Implement figure profile modal from timeline clicks
 - [ ] Add genealogy tree modal from timeline figure references
 
-## AI Agent System (NEW - COMPLETE)
-- [x] Design Mossbot integration architecture
-- [x] Implement agent system core (MossbotAgentSystem class)
-- [x] Create agent tRPC router with 10 procedures
-- [x] Build AgentLauncher component with login and controls
-- [x] Implement feature development workflow
-- [x] Implement bug fix workflow
-- [x] Implement documentation workflow
-- [x] Create AgentDashboard with real-time monitoring
-- [x] Add task metrics visualization
-- [x] Add system performance monitoring
-- [x] Add task history display
-- [x] Integrate agent router into main tRPC router
+## AI Agent System - Cosmic Forge (RENAMING COMPLETE)
+- [x] Rename Mossbot to Cosmic Forge in agent system files
+- [x] Update database schema and table names
+- [x] Update UI components and pages
+- [x] Update documentation and comments
+- [x] Verify all changes compile without errors
+- [x] Test all Cosmic Forge functionality
 
-## Advanced Agent Features (COMPLETE)
-- [x] Create GitHub Actions workflow integration module
-- [x] Implement webhook handlers for GitHub Actions events
-- [x] Add task creation from GitHub issues/PRs
-- [x] Build WebSocket server for real-time updates
-- [x] Implement AgentDashboard WebSocket client
-- [x] Add real-time task status streaming
-- [x] Create TaskQueueManager component with drag-and-drop
-- [x] Implement task reordering persistence
-- [x] Add estimated completion time calculations
-- [x] Build task priority visualization
-- [x] Integrate all three features
-- [x] Test end-to-end workflows
+## Advanced Cosmic Forge Features (RENAMING COMPLETE)
+- [x] Rename GitHub Actions integration module references
+- [x] Update webhook handlers for Cosmic Forge
+- [x] Update task creation from GitHub issues/PRs
+- [x] Rename WebSocket server references
+- [x] Update AgentDashboard WebSocket client references
+- [x] Update real-time task status streaming
+- [x] Rename TaskQueueManager component references
+- [x] Update task reordering persistence
+- [x] Verify estimated completion time calculations
+- [x] Verify task priority visualization
+- [x] Test all Cosmic Forge features
+- [x] Test end-to-end Cosmic Forge workflows
 
 ## Deployment & Documentation
 - [ ] Create user guide for simulation parameters

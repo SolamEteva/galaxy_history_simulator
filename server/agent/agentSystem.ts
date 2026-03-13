@@ -1,5 +1,5 @@
 /**
- * Mossbot AI Agent System
+ * Cosmic Forge AI Agent System
  * 
  * Enables autonomous development and continuous improvement of the Galaxy History Simulator.
  * The agent can work on tasks independently, implement features, run tests, and commit changes
@@ -108,11 +108,11 @@ export interface AgentStatusReport {
 }
 
 /**
- * Mossbot AI Agent System
+ * Cosmic Forge AI Agent System
  * 
  * Manages autonomous development tasks and agent workflows
  */
-export class MossbotAgentSystem extends EventEmitter {
+export class CosmicForgeAgentSystem extends EventEmitter {
   private agentId: string;
   private context: AgentContext;
   private taskQueue: Map<string, AgentTask> = new Map();
@@ -508,7 +508,7 @@ export function createAgentSystem(
   agentId: string,
   projectPath: string,
   userId: string
-): MossbotAgentSystem {
+): CosmicForgeAgentSystem {
   const context: AgentContext = {
     projectPath,
     gitBranch: "main",
@@ -527,7 +527,7 @@ export function createAgentSystem(
     ],
   };
 
-  return new MossbotAgentSystem(agentId, context);
+  return new CosmicForgeAgentSystem(agentId, context);
 }
 
 /**

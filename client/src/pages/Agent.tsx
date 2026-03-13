@@ -21,7 +21,7 @@ export default function Agent() {
                 AI Agent Control Center
               </h1>
               <p className="text-slate-300">
-                Autonomous development system powered by Mossbot
+                Autonomous development system powered by Cosmic Forge
               </p>
             </div>
             <Button

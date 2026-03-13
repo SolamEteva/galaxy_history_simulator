@@ -1,7 +1,7 @@
 /**
  * Agent Status Dashboard
  * 
- * Real-time monitoring and management interface for the Mossbot AI Agent system
+ * Real-time monitoring and management interface for the Cosmic Forge AI Agent system
  */
 
 import React, { useState, useEffect } from "react";

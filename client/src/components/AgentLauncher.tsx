@@ -1,7 +1,7 @@
 /**
  * Agent Launcher Component
  * 
- * Provides user-friendly interface for launching and controlling the Mossbot AI Agent system
+ * Provides user-friendly interface for launching and controlling the Cosmic Forge AI Agent system
  */
 
 import React, { useState, useEffect } from "react";
@@ -163,7 +163,7 @@ export const AgentLauncher: React.FC = () => {
             <div>
               <CardTitle className="text-white flex items-center gap-2">
                 <Zap className="w-5 h-5 text-yellow-400" />
-                Mossbot AI Agent
+                Cosmic Forge AI Agent
               </CardTitle>
               <CardDescription className="text-slate-400">
                 Autonomous development system for Galaxy History Simulator
