@@ -174,3 +174,37 @@
 - [ ] Create QUICK_START.md for launcher
 - [ ] Add WORKFLOW.md explaining the Continuous Workshop approach
 - [ ] Update contributing guidelines with new implementation phases
+
+
+## Phase 2: Trade/Communication Network Implementation
+- [x] Create TradeNetworkEngine for resource flow between civilizations
+- [x] Implement distance-based delay calculation for trade routes
+- [x] Add trade route creation and management
+- [x] Create trade impact propagation system
+- [ ] Add trade network visualization component
+- [ ] Write tests for trade network mechanics
+
+## Phase 3: Perspective-Switching Chronicler
+- [x] Create ChroniclerModule for multi-perspective narratives
+- [x] Implement perspective types (victor, loser, neutral, archaeologist, alien)
+- [x] Add narrative generation for each perspective
+- [x] Create contradiction detection system
+- [ ] Build perspective viewer UI component
+- [ ] Add perspective comparison visualization
+
+## Phase 4: Crisis Cascade Detection and UI
+- [x] Enhance CausalGraphEngine to detect cascades
+- [x] Create CrisisCascadeVisualizer component
+- [x] Build cascade visualization (flow diagram, timeline, impact views)
+- [x] Add cascade timeline view
+- [x] Create cascade impact metrics
+- [x] Build cascade explorer UI
+- [ ] Write cascade detection tests
+
+## Phase 5: Integration and Testing
+- [x] Create SystemIntegrationManager to connect all three systems
+- [x] Implement event processing through all systems
+- [ ] End-to-end testing of interconnected features
+- [ ] Performance optimization
+- [ ] UI polish and refinement
+- [ ] Documentation updates
