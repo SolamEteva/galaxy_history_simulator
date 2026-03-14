@@ -7,6 +7,7 @@ import Genealogy from "@/pages/Genealogy";
 import Figures from "@/pages/Figures";
 import Timeline from "@/pages/Timeline";
 import Agent from "@/pages/Agent";
+import Launcher from "@/pages/Launcher";
 import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
@@ -14,7 +15,8 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 function Router() {
   return (
     <Switch>
-      <Route path={"/"} component={Home} />
+      <Route path={"/"} component={Launcher} />
+      <Route path={"/home"} component={Home} />
       <Route path={"/galaxy/:galaxyId"} component={GalaxyDetail} />
       <Route path={"/genealogy"} component={Genealogy} />
       <Route path={"/figures"} component={Figures} />
