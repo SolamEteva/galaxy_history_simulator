@@ -1,0 +1,426 @@
+/**
+ * Narrative Exporter
+ * 
+ * Generates exportable narratives in multiple formats:
+ * - Markdown for easy sharing and version control
+ * - PDF for formal documentation
+ * - JSON for data interchange
+ * 
+ * Includes:
+ * - Multi-perspective analysis
+ * - Contradiction highlighting
+ * - Hidden truth revelation
+ * - Cascade analysis
+ */
+
+export interface ExportEvent {
+  id: string;
+  type: string;
+  timestamp: number;
+  actors: string[];
+  location: string;
+  significance: number;
+  narratives: Map<string, string>;
+  contradictions: Array<{
+    perspectives: [string, string];
+    claim1: string;
+    claim2: string;
+    resolution: string;
+  }>;
+  hiddenTruths: string[];
+}
+
+export interface ExportCascade {
+  id: string;
+  name: string;
+  severity: number;
+  events: ExportEvent[];
+  timeline: ExportEvent[];
+}
+
+export interface ExportOptions {
+  includeContradictions?: boolean;
+  includeHiddenTruths?: boolean;
+  includeCascadeAnalysis?: boolean;
+  includeMetadata?: boolean;
+  format: "markdown" | "pdf" | "json";
+}
+
+/**
+ * Narrative Exporter
+ */
+export class NarrativeExporter {
+  /**
+   * Export event narratives to Markdown
+   */
+  static exportEventToMarkdown(event: ExportEvent, options: Partial<ExportOptions> = {}): string {
+    const {
+      includeContradictions = true,
+      includeHiddenTruths = true,
+      includeMetadata = true,
+    } = options;
+
+    let markdown = "";
+
+    // Header
+    markdown += `# ${event.type.replace(/_/g, " ").toUpperCase()}\n\n`;
+
+    // Metadata
+    if (includeMetadata) {
+      markdown += `**Timestamp:** Tick ${event.timestamp}\n`;
+      markdown += `**Location:** ${event.location}\n`;
+      markdown += `**Significance:** ${Math.round(event.significance * 100)}%\n`;
+      markdown += `**Actors:** ${event.actors.join(", ")}\n\n`;
+    }
+
+    // Narratives
+    markdown += `## Multiple Perspectives\n\n`;
+
+    event.narratives.forEach((narrative, perspective) => {
+      markdown += `### ${perspective.replace(/_/g, " ")}\n\n`;
+      markdown += `${narrative}\n\n`;
+    });
+
+    // Contradictions
+    if (includeContradictions && event.contradictions.length > 0) {
+      markdown += `## Contradictions Found\n\n`;
+
+      event.contradictions.forEach((contradiction, index) => {
+        markdown += `### Contradiction ${index + 1}\n\n`;
+        markdown += `**${contradiction.perspectives[0]}:** "${contradiction.claim1}"\n\n`;
+        markdown += `**${contradiction.perspectives[1]}:** "${contradiction.claim2}"\n\n`;
+        markdown += `**What Actually Happened:** ${contradiction.resolution}\n\n`;
+      });
+    }
+
+    // Hidden Truths
+    if (includeHiddenTruths && event.hiddenTruths.length > 0) {
+      markdown += `## Hidden Truths Revealed\n\n`;
+
+      event.hiddenTruths.forEach((truth) => {
+        markdown += `- ${truth}\n`;
+      });
+
+      markdown += "\n";
+    }
+
+    return markdown;
+  }
+
+  /**
+   * Export cascade to Markdown
+   */
+  static exportCascadeToMarkdown(cascade: ExportCascade, options: Partial<ExportOptions> = {}): string {
+    const {
+      includeContradictions = true,
+      includeHiddenTruths = true,
+      includeMetadata = true,
+    } = options;
+
+    let markdown = "";
+
+    // Header
+    markdown += `# Crisis Cascade: ${cascade.name}\n\n`;
+
+    // Metadata
+    if (includeMetadata) {
+      markdown += `**Severity:** ${Math.round(cascade.severity * 100)}%\n`;
+      markdown += `**Total Events:** ${cascade.events.length}\n`;
+      markdown += `**Duration:** ${cascade.timeline.length} ticks\n\n`;
+    }
+
+    // Timeline
+    markdown += `## Event Timeline\n\n`;
+
+    cascade.timeline.forEach((event, index) => {
+      markdown += `### Event ${index + 1}: ${event.type.replace(/_/g, " ")}\n`;
+      markdown += `- **Tick:** ${event.timestamp}\n`;
+      markdown += `- **Significance:** ${Math.round(event.significance * 100)}%\n`;
+      markdown += `- **Actors:** ${event.actors.join(", ")}\n\n`;
+    });
+
+    // Cascade Analysis
+    markdown += `## Cascade Analysis\n\n`;
+    markdown += `This cascade demonstrates how a single trigger event can propagate through interconnected systems, `;
+    markdown += `creating a chain of consequences that amplify the initial impact. The severity of ${Math.round(cascade.severity * 100)}% `;
+    markdown += `indicates significant systemic disruption.\n\n`;
+
+    // Event Details
+    markdown += `## Detailed Event Analysis\n\n`;
+
+    cascade.events.forEach((event) => {
+      markdown += this.exportEventToMarkdown(event, {
+        includeContradictions,
+        includeHiddenTruths,
+        includeMetadata: false,
+      });
+      markdown += "---\n\n";
+    });
+
+    return markdown;
+  }
+
+  /**
+   * Export multiple events to Markdown document
+   */
+  static exportEventsToMarkdown(
+    events: ExportEvent[],
+    title: string = "Galaxy History",
+    options: Partial<ExportOptions> = {}
+  ): string {
+    let markdown = "";
+
+    // Document header
+    markdown += `# ${title}\n\n`;
+    markdown += `*Generated by Cosmic Forge Simulation Engine*\n\n`;
+    markdown += `**Total Events:** ${events.length}\n`;
+    markdown += `**Generated:** ${new Date().toISOString()}\n\n`;
+
+    // Table of contents
+    markdown += `## Table of Contents\n\n`;
+    events.forEach((event, index) => {
+      markdown += `${index + 1}. [${event.type.replace(/_/g, " ")}](#event-${index})\n`;
+    });
+    markdown += "\n---\n\n";
+
+    // Events
+    events.forEach((event, index) => {
+      markdown += `<a id="event-${index}"></a>\n\n`;
+      markdown += this.exportEventToMarkdown(event, options);
+      markdown += "\n---\n\n";
+    });
+
+    return markdown;
+  }
+
+  /**
+   * Export to JSON for data interchange
+   */
+  static exportToJSON(
+    data: ExportEvent[] | ExportCascade,
+    options: Partial<ExportOptions> = {}
+  ): string {
+    const json = {
+      version: "1.0",
+      generated: new Date().toISOString(),
+      data: Array.isArray(data) ? data : [data],
+      options,
+    };
+
+    return JSON.stringify(json, null, 2);
+  }
+
+  /**
+   * Generate PDF content (requires external library)
+   * This returns HTML that can be converted to PDF
+   */
+  static generatePDFHTML(
+    events: ExportEvent[],
+    title: string = "Galaxy History",
+    options: Partial<ExportOptions> = {}
+  ): string {
+    const { includeContradictions = true, includeHiddenTruths = true } = options;
+
+    let html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>${title}</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+      background: white;
+    }
+    h1 {
+      color: #1a1a1a;
+      border-bottom: 3px solid #3b82f6;
+      padding-bottom: 10px;
+      margin-top: 30px;
+    }
+    h2 {
+      color: #2d3748;
+      margin-top: 20px;
+    }
+    h3 {
+      color: #4a5568;
+    }
+    .metadata {
+      background: #f7fafc;
+      padding: 10px;
+      border-left: 4px solid #3b82f6;
+      margin: 10px 0;
+      font-size: 0.9em;
+    }
+    .narrative {
+      background: #f9fafb;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border-left: 4px solid #8b5cf6;
+    }
+    .contradiction {
+      background: #fef3c7;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border-left: 4px solid #f59e0b;
+    }
+    .hidden-truth {
+      background: #dbeafe;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border-left: 4px solid #3b82f6;
+    }
+    .page-break {
+      page-break-after: always;
+      margin: 30px 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 15px 0;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: left;
+    }
+    th {
+      background: #f3f4f6;
+      font-weight: bold;
+    }
+    .perspective-label {
+      display: inline-block;
+      padding: 4px 8px;
+      background: #e5e7eb;
+      border-radius: 3px;
+      font-size: 0.85em;
+      margin-right: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>${title}</h1>
+  <p><em>Generated by Cosmic Forge Simulation Engine</em></p>
+  <p><strong>Generated:</strong> ${new Date().toLocaleString()}</p>
+  <p><strong>Total Events:</strong> ${events.length}</p>
+  <hr>
+`;
+
+    // Add events
+    events.forEach((event, index) => {
+      html += `
+  <div class="page-break">
+    <h2>${event.type.replace(/_/g, " ").toUpperCase()}</h2>
+    <div class="metadata">
+      <p><strong>Tick:</strong> ${event.timestamp}</p>
+      <p><strong>Location:</strong> ${event.location}</p>
+      <p><strong>Significance:</strong> ${Math.round(event.significance * 100)}%</p>
+      <p><strong>Actors:</strong> ${event.actors.join(", ")}</p>
+    </div>
+
+    <h3>Multiple Perspectives</h3>
+`;
+
+      event.narratives.forEach((narrative, perspective) => {
+        html += `
+    <div class="narrative">
+      <span class="perspective-label">${perspective.replace(/_/g, " ")}</span>
+      <p>${narrative}</p>
+    </div>
+`;
+      });
+
+      if (includeContradictions && event.contradictions.length > 0) {
+        html += `
+    <h3>Contradictions</h3>
+`;
+        event.contradictions.forEach((contradiction) => {
+          html += `
+    <div class="contradiction">
+      <p><strong>${contradiction.perspectives[0]}:</strong> "${contradiction.claim1}"</p>
+      <p><strong>${contradiction.perspectives[1]}:</strong> "${contradiction.claim2}"</p>
+      <p><strong>Resolution:</strong> ${contradiction.resolution}</p>
+    </div>
+`;
+        });
+      }
+
+      if (includeHiddenTruths && event.hiddenTruths.length > 0) {
+        html += `
+    <h3>Hidden Truths</h3>
+    <div class="hidden-truth">
+      <ul>
+`;
+        event.hiddenTruths.forEach((truth) => {
+          html += `        <li>${truth}</li>\n`;
+        });
+        html += `      </ul>
+    </div>
+`;
+      }
+
+      html += `  </div>\n`;
+    });
+
+    html += `
+</body>
+</html>
+`;
+
+    return html;
+  }
+
+  /**
+   * Create a summary report
+   */
+  static generateSummaryReport(events: ExportEvent[], cascades: ExportCascade[]): string {
+    let report = "";
+
+    report += `# Simulation Summary Report\n\n`;
+    report += `**Generated:** ${new Date().toISOString()}\n\n`;
+
+    // Statistics
+    report += `## Statistics\n\n`;
+    report += `- **Total Events:** ${events.length}\n`;
+    report += `- **Total Cascades:** ${cascades.length}\n`;
+    report += `- **Average Event Significance:** ${(events.reduce((sum, e) => sum + e.significance, 0) / Math.max(events.length, 1) * 100).toFixed(1)}%\n`;
+    report += `- **Maximum Cascade Severity:** ${(Math.max(...cascades.map((c) => c.severity)) * 100).toFixed(1)}%\n\n`;
+
+    // Event Distribution
+    report += `## Event Distribution\n\n`;
+    const eventTypes = new Map<string, number>();
+    events.forEach((event) => {
+      eventTypes.set(event.type, (eventTypes.get(event.type) || 0) + 1);
+    });
+
+    report += `| Event Type | Count |\n`;
+    report += `|---|---|\n`;
+    eventTypes.forEach((count, type) => {
+      report += `| ${type.replace(/_/g, " ")} | ${count} |\n`;
+    });
+    report += "\n";
+
+    // Top Cascades
+    if (cascades.length > 0) {
+      report += `## Most Severe Cascades\n\n`;
+      const topCascades = [...cascades].sort((a, b) => b.severity - a.severity).slice(0, 5);
+
+      topCascades.forEach((cascade, index) => {
+        report += `${index + 1}. **${cascade.name}** - Severity: ${Math.round(cascade.severity * 100)}%\n`;
+      });
+      report += "\n";
+    }
+
+    return report;
+  }
+}
+
+export default NarrativeExporter;

@@ -241,3 +241,28 @@
 - [x] Implement data fetching from tRPC
 - [ ] Add real-time updates
 - [ ] Polish UI and interactions
+
+
+## Phase 10: WebSocket Real-Time Updates
+- [x] Create WebSocket server infrastructure
+- [x] Implement event stream broadcasting
+- [x] Add cascade detection real-time notifications
+- [x] Create client-side WebSocket hooks
+- [x] Implement automatic reconnection logic
+- [x] Add real-time UI updates for events and cascades
+
+## Phase 11: Simulation Control Panel
+- [x] Create SimulationController component
+- [x] Implement pause/resume/stop controls
+- [x] Add simulation speed controls
+- [x] Create event injection interface
+- [x] Build civilization parameter editor
+- [ ] Add simulation state persistence
+
+## Phase 12: Narrative Export System
+- [x] Create NarrativeExporter utility
+- [x] Implement PDF export with formatting
+- [x] Add Markdown export functionality
+- [x] Create contradiction analysis export
+- [x] Build multi-perspective document generation
+- [ ] Add export scheduling and batch operations
