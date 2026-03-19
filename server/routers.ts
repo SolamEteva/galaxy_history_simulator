@@ -10,6 +10,9 @@ import { exportRouter } from "./exportRouter";
 import { narrativeRouter } from "./routers/narrative";
 import { agentRouter } from "./routers/agent";
 import { simulationRouter } from "./routers/simulation";
+import { simulationControlRouter } from "./routers/simulationControl";
+import { eventPersistenceRouter } from "./routers/eventPersistence";
+import { collaborativeSharingRouter } from "./routers/collaborativeSharing";
 import {
   getUserGalaxies,
   getGalaxy,
@@ -30,6 +33,9 @@ export const appRouter = router({
   narrative: narrativeRouter,
   agent: agentRouter,
   simulation: simulationRouter,
+  simulationControl: simulationControlRouter,
+  eventPersistence: eventPersistenceRouter,
+  collaborativeSharing: collaborativeSharingRouter,
 
   auth: router({
     me: publicProcedure.query((opts) => opts.ctx.user),
