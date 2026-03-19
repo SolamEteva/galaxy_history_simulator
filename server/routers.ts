@@ -9,6 +9,7 @@ import { debugRouter } from "./debugRouter";
 import { exportRouter } from "./exportRouter";
 import { narrativeRouter } from "./routers/narrative";
 import { agentRouter } from "./routers/agent";
+import { simulationRouter } from "./routers/simulation";
 import {
   getUserGalaxies,
   getGalaxy,
@@ -28,6 +29,7 @@ export const appRouter = router({
   export: exportRouter,
   narrative: narrativeRouter,
   agent: agentRouter,
+  simulation: simulationRouter,
 
   auth: router({
     me: publicProcedure.query((opts) => opts.ctx.user),

@@ -208,3 +208,36 @@
 - [ ] Performance optimization
 - [ ] UI polish and refinement
 - [ ] Documentation updates
+
+
+## Phase 6: Frontend Integration - tRPC Procedures
+- [x] Create tRPC router for SystemIntegrationManager
+- [x] Add procedures for querying events and cascades
+- [x] Add procedures for retrieving narratives
+- [x] Add procedures for network statistics
+- [x] Add procedures for causal graph data
+- [ ] Write tests for tRPC procedures
+
+## Phase 7: Perspective Viewer UI Component
+- [x] Create PerspectiveViewer component
+- [x] Implement narrative comparison display
+- [x] Add contradiction highlighting
+- [x] Build perspective selector tabs
+- [x] Add tone and bias indicators
+- [x] Create hidden truth revelation section
+
+## Phase 8: Trade Network Visualization
+- [x] Create TradeNetworkMap component
+- [x] Implement civilization nodes visualization
+- [x] Add trade route rendering
+- [x] Create animated good/idea flow
+- [x] Add network statistics overlay
+- [x] Implement interactive route details
+
+## Phase 9: Integration into Galaxy Detail View
+- [x] Add tabs for different views (Chronicle, Trade Network, Perspectives)
+- [x] Integrate all three new components
+- [x] Add loading states and error handling
+- [x] Implement data fetching from tRPC
+- [ ] Add real-time updates
+- [ ] Polish UI and interactions
