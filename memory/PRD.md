@@ -41,7 +41,17 @@ A computational mythology engine that generates not just worlds, but histories t
    - 6 propagation mechanisms: Light-Cone, Quantum Entanglement, Dimensional Bleed, Stellar Carrier, Archaeological Time-Bomb, Gravity Well Network
    - Each mechanism has different: delay, fidelity, transformation bias
    - Cosmological Stances determine interpretation (omens vs communications vs art)
-   - Same event → Different destinies across the gulf of space
+4. **Interstellar Propagation Visualizer** - UI Component (NEW)
+   - `/app/galaxy_simulator/client/src/components/InterstellarVisualizer.tsx` (826 lines)
+   - Animated galaxy map showing civilizations across dimensions
+   - Visual propagation waves: Light-cone (slow ring), Quantum (instant flash), Gravity (fast pulse), Dimensional (ghostly)
+   - Click civilization to see arrived events and Chronicler perspectives
+   - Active wave progress bars showing all mechanisms simultaneously
+   - Route: `/interstellar`
+
+5. **Demo Links in Launcher**
+   - Added "Physics of Consequence Demos" section to Launcher page
+   - Links to `/crisis-demo` (Iron Bankruptcy) and `/interstellar` (Propagation visualizer)
 
 ---
 
@@ -110,9 +120,10 @@ A computational mythology engine that generates not just worlds, but histories t
 ## Prioritized Backlog
 
 ### P0 - Critical (Next Session)
-1. [ ] Wire Play/Pause UI buttons to actual simulation loop
-2. [ ] Persist cascade events to database
-3. [ ] Connect CrisisCascadeEngine to existing UI timeline view
+1. [x] ~~Wire UI to demos~~ - Created visual interstellar propagation demo
+2. [ ] Start the app and verify visual animations work
+3. [ ] Add local Ollama Chronicler integration
+4. [ ] Persist cascade events to database
 
 ### P1 - Important
 1. [ ] Implement News System with distance-based delay and distortion
