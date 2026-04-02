@@ -24,11 +24,17 @@ A computational mythology engine that generates not just worlds, but histories t
 4. **TradeNetworkEngine** - Inter-civilization trade routes
 
 ### New System (Implemented 2026-04-02)
-1. **CrisisCascadeEngine** - The "Physics of Consequence" in action
-   - `CrisisDetector` - Recognizes trigger conditions
-   - `CascadePropagator` - Generates downstream events with delays
-   - `CausalLinker` - Populates `causalParents` arrays with real edges
-   - `DistanceDecay` - Delays effects based on trade route distance
+1. **CrisisCascadeEngine** - Original "Physics of Consequence" proof-of-concept
+   - Demonstrated causal chains work (12-event depth)
+   - Populated `causalParents` arrays with real edges
+
+2. **Valence-Agnostic Galaxy Simulator** - Full emergent system
+   - `emergentPropagationEngine.ts` - Cultural profiles, border dynamics, momentum
+   - `galaxySimulator.ts` - Main engine with valence-neutral physics
+   - **Cultural Profiles**: resilience, openness, cohesion, optimism, isolationism, innovation, tradition
+   - **Border Dynamics**: permeability, political shielding, invitation factor, cultural similarity
+   - **Event Momentum**: cultural resonance, distance decay, viral coefficient, transformation probability
+   - **Golden Ages AND Dark Ages** emerge naturally based on cultural terrain
 
 ---
 
@@ -41,27 +47,28 @@ A computational mythology engine that generates not just worlds, but histories t
 - Identified gap: Beautiful architecture but systems not communicating
 - Created `/app/galaxy_simulator/AUDIT_REPORT.md`
 
-#### 2. Crisis Cascade Engine (Core Implementation)
+#### 2. Valence-Agnostic Galaxy Simulator (Major Architecture)
 **Files Created:**
-- `/app/galaxy_simulator/server/engines/crisisCascadeEngine.ts` (984 lines)
-- `/app/galaxy_simulator/server/routers/crisisCascade.ts` (tRPC router)
-- `/app/galaxy_simulator/client/src/components/IronBankruptcyDemo.tsx` (UI)
-- `/app/galaxy_simulator/client/src/pages/CrisisDemo.tsx` (Page route)
+- `/app/galaxy_simulator/server/engines/emergentPropagationEngine.ts` (600+ lines)
+  - Cultural profiles with 7 traits
+  - 28 event types (positive, negative, neutral, transformative)
+  - Propagation rules with cultural modifiers
+  - Border crossing calculations
+  - Momentum mechanics
+  
+- `/app/galaxy_simulator/server/engines/galaxySimulator.ts` (500+ lines)
+  - Main simulation engine
+  - Event propagation with valence transformation
+  - Cultural terrain affects outcomes
+  - Causal chain tracing
 
-**The "Iron Bankruptcy" Cascade Chain:**
-```
-RESOURCE DEPLETION → ECONOMIC SHOCK → FOOD SHORTAGE → FAMINE → 
-MIGRATION → REFUGEE CRISIS → XENOPHOBIA → BORDER TENSION → 
-DIPLOMATIC INCIDENT → WAR DECLARATION → TRADE DISRUPTION → 
-TECHNOLOGICAL REGRESSION
-```
+**Test Results (Valence Balance):**
+- Resilient culture + resource_depletion → **55 positive events, 2 negative** (crisis → opportunity)
+- Progressive culture + discovery → **18 positive events, 0 negative** (golden age cascade)
+- Traditional culture + cultural_contact → **3 neutral events** (filtered through values)
+- Isolationist culture + migration → **2 positive, 7 neutral** (managed integration)
 
-**Success Metrics Achieved:**
-- ✅ 12-event causal chain depth
-- ✅ 15/15 child events have populated `causalParents`
-- ✅ 3 civilizations affected by ripple effects
-- ✅ 12 unique event types generated
-- ✅ Butterfly Effect Tracer can explain any event back to root cause
+**Key Achievement:** Same physics, different outcomes. Direction depends on cultural terrain, not script.
 
 ---
 
