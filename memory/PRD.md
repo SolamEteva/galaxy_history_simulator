@@ -36,6 +36,13 @@ A computational mythology engine that generates not just worlds, but histories t
    - **Event Momentum**: cultural resonance, distance decay, viral coefficient, transformation probability
    - **Golden Ages AND Dark Ages** emerge naturally based on cultural terrain
 
+3. **Interstellar Propagation Mechanics** - Cross-Gulf Physics (NEW)
+   - `/app/galaxy_simulator/server/engines/interstellarPropagation.ts` (600+ lines)
+   - 6 propagation mechanisms: Light-Cone, Quantum Entanglement, Dimensional Bleed, Stellar Carrier, Archaeological Time-Bomb, Gravity Well Network
+   - Each mechanism has different: delay, fidelity, transformation bias
+   - Cosmological Stances determine interpretation (omens vs communications vs art)
+   - Same event → Different destinies across the gulf of space
+
 ---
 
 ## What's Been Implemented
