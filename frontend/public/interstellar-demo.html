@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interstellar Propagation Visualizer</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.7; transform: scale(1.1); }
+    }
+    @keyframes ping {
+      75%, 100% { transform: scale(2); opacity: 0; }
+    }
+    .animate-pulse-custom { animation: pulse 2s ease-in-out infinite; }
+    .animate-ping-custom { animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite; }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 min-h-screen text-white">
+  <div class="max-w-7xl mx-auto p-6">
+    
+    <!-- Header -->
+    <div class="bg-slate-800/50 border border-indigo-700 rounded-xl p-6 mb-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-2xl font-bold flex items-center gap-2">
+            <span class="text-indigo-400">🌌</span>
+            Interstellar Propagation Visualizer
+          </h1>
+          <p class="text-indigo-200/70 mt-1">
+            Watch "The Great Unification" pulse across the galaxy via different mechanisms
+          </p>
+        </div>
+        <div class="text-right">
+          <p class="text-sm text-indigo-200/60">Year</p>
+          <p id="year" class="text-3xl font-bold">2847</p>
+          <p id="tick" class="text-xs text-indigo-200/40">Tick 0</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-4 mb-6">
+      <div class="flex flex-wrap gap-4 items-center">
+        <button id="triggerBtn" onclick="triggerEvent()" class="bg-yellow-600 hover:bg-yellow-700 px-4 py-2 rounded-lg font-medium flex items-center gap-2">
+          ✨ Trigger "The Great Unification"
+        </button>
+        <button id="pauseBtn" onclick="togglePause()" class="hidden bg-slate-600 hover:bg-slate-500 px-4 py-2 rounded-lg font-medium">
+          ⏸️ Pause
+        </button>
+        <button id="resetBtn" onclick="resetSimulation()" class="hidden bg-slate-600 hover:bg-slate-500 px-4 py-2 rounded-lg font-medium">
+          🔄 Reset
+        </button>
+        
+        <!-- Legend -->
+        <div class="flex gap-4 ml-auto text-sm">
+          <div class="flex items-center gap-1">
+            <div class="w-4 h-1 bg-yellow-300"></div>
+            <span class="text-slate-400">Light-Cone (slow)</span>
+          </div>
+          <div class="flex items-center gap-1">
+            <div class="w-4 h-1 bg-purple-400"></div>
+            <span class="text-slate-400">Quantum (instant)</span>
+          </div>
+          <div class="flex items-center gap-1">
+            <div class="w-4 h-1 bg-green-400"></div>
+            <span class="text-slate-400">Gravity (fast)</span>
+          </div>
+          <div class="flex items-center gap-1">
+            <div class="w-4 h-1 bg-violet-400 opacity-50"></div>
+            <span class="text-slate-400">Dimensional (ghostly)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      
+      <!-- Galaxy Map -->
+      <div class="lg:col-span-2 bg-slate-800/50 border border-slate-700 rounded-xl p-4">
+        <h2 class="text-lg font-bold mb-2">Galaxy Map</h2>
+        <p class="text-slate-400 text-sm mb-4">Click a civilization to see received events</p>
+        
+        <div id="galaxyMap" class="relative w-full aspect-video bg-slate-900/80 rounded-lg overflow-hidden" style="background-image: radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.1) 0%, transparent 70%);">
+          
+          <!-- Star field -->
+          <div id="starfield" class="absolute inset-0 opacity-30"></div>
+          
+          <!-- SVG for connections -->
+          <svg id="connectionsSvg" class="absolute inset-0 w-full h-full" style="z-index: 10;"></svg>
+          
+          <!-- Light-cone ring -->
+          <div id="lightConeRing" class="absolute rounded-full border-2 border-yellow-300/30 pointer-events-none hidden" style="left: 50%; top: 50%; transform: translate(-50%, -50%);"></div>
+          
+          <!-- Civilizations will be added here -->
+          <div id="civilizations"></div>
+        </div>
+      </div>
+
+      <!-- Details Panel -->
+      <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-4">
+        <h2 id="detailsTitle" class="text-lg font-bold mb-2 flex items-center gap-2">
+          👁️ Select a Civilization
+        </h2>
+        <div id="detailsContent" class="text-slate-400">
+          <p>Click a civilization on the map to see its received events and Chronicler interpretations.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Propagations -->
+    <div id="propagationsPanel" class="hidden bg-slate-800/50 border border-slate-700 rounded-xl p-4 mt-6">
+      <h2 class="text-lg font-bold mb-4 flex items-center gap-2">
+        🕐 Active Propagations
+      </h2>
+      <div id="propagationCards" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3"></div>
+    </div>
+  </div>
+
+  <script>
+    // ============================================================================
+    // DATA
+    // ============================================================================
+    
+    const CIVILIZATIONS = [
+      { id: "alpha", name: "Unified Collective", x: 50, y: 50, layer: 0, color: "#FFD700", cosmology: "transcendent", quantumPairs: ["beta"], gravityConns: ["gamma"] },
+      { id: "beta", name: "Rationalist Federation", x: 75, y: 35, layer: 0, color: "#4FC3F7", cosmology: "empiricist", quantumPairs: ["alpha"], gravityConns: [] },
+      { id: "gamma", name: "Ancient Traditions", x: 25, y: 70, layer: 0, color: "#FF7043", cosmology: "xenophobic", quantumPairs: [], gravityConns: ["alpha"] },
+      { id: "delta", name: "Dimensional Wanderers", x: 60, y: 75, layer: 1, color: "#BA68C8", cosmology: "multidimensional", quantumPairs: [], gravityConns: [] },
+    ];
+    
+    const PROPAGATIONS = [
+      { id: "q-beta", mechanism: "quantum", sourceId: "alpha", targetId: "beta", delay: 5, fidelity: 0.98, color: "#E040FB", label: "Quantum" },
+      { id: "gn-gamma", mechanism: "gravity_network", sourceId: "alpha", targetId: "gamma", delay: 15, fidelity: 0.98, color: "#69F0AE", label: "Gravity" },
+      { id: "lc-beta", mechanism: "light_cone", sourceId: "alpha", targetId: "beta", delay: 100, fidelity: 0.82, color: "#FFE082", label: "Light-Cone" },
+      { id: "db-delta", mechanism: "dimensional_bleed", sourceId: "alpha", targetId: "delta", delay: 60, fidelity: 0.45, color: "#B388FF", label: "Bleed" },
+      { id: "lc-gamma", mechanism: "light_cone", sourceId: "alpha", targetId: "gamma", delay: 500, fidelity: 0.50, color: "#FFE082", label: "Light-Cone" },
+      { id: "sc-gamma", mechanism: "stellar_carrier", sourceId: "alpha", targetId: "gamma", delay: 600, fidelity: 0.12, color: "#FFAB40", label: "Stellar" },
+    ];
+    
+    const CHRONICLER = {
+      alpha: {
+        scientist: "We have achieved the Great Unification. All forces converge into elegant mathematics.",
+        prophet: "The cosmos speaks through us now. Unity is the fundamental law.",
+        diplomat: "Our discovery will reshape all civilizations. We must share responsibly.",
+        historian: "Year 2847 marks the dawn of unified physics—the most significant event since consciousness emerged.",
+        dimensional: "The manifold recognizes our understanding. Adjacent layers resonate in approval."
+      },
+      beta: {
+        scientist: "Quantum-entangled data confirmed: Alpha achieved unification. 98% fidelity. We must verify independently before accepting.",
+        prophet: "The instant knowing suggests deeper connection than mere physics. The entanglement carries more than data.",
+        diplomat: "If true, Alpha has leapfrogged our research by decades. We must accelerate or be left behind.",
+        historian: "This transmission, arriving 0.1 years after the event, would spark the Great Race for Verification.",
+        dimensional: "The quantum link carried more than data—a sense of rightness pervades our equations now."
+      },
+      gamma: {
+        scientist: "Foreign signal detected via gravity ridge. 98% fidelity but contents suggest dangerous paradigm shift. Recommend isolation.",
+        prophet: "The stars warned us! Through the ancient channels, contamination approaches!",
+        diplomat: "Alpha's 'unification' is cultural imperialism dressed as science. We developed independently for millennia. Reject!",
+        historian: "This was the moment the Traditional Council chose fear over curiosity—a decision they would regret for centuries.",
+        dimensional: "We felt nothing through the void. Our barriers held. But some among us heard whispers in their dreams..."
+      },
+      delta: {
+        scientist: "Cross-dimensional resonance detected before any physical signal. Source: adjacent layer, Dimension 0. Fascinating asymmetry.",
+        prophet: "The Other Side sings! Unity cascades across the manifold! We are witnesses to cosmic convergence!",
+        diplomat: "Our dimensional neighbors have touched the truth. Perhaps we should guide them, not fear their discovery.",
+        historian: "Before the equations arrived, the feeling did. We knew unity before we understood it—proof that dimensions share more than space.",
+        dimensional: "I dreamed of convergence for weeks. Then I woke and the math was already on my screen. The bleed preceded the fact."
+      }
+    };
+    
+    // ============================================================================
+    // STATE
+    // ============================================================================
+    
+    let isRunning = false;
+    let isPaused = false;
+    let currentTick = 0;
+    let animationId = null;
+    let waves = [];
+    let arrivedEvents = {};
+    let selectedCiv = null;
+    
+    // ============================================================================
+    // INITIALIZATION
+    // ============================================================================
+    
+    function init() {
+      // Create star field
+      const starfield = document.getElementById('starfield');
+      for (let i = 0; i < 80; i++) {
+        const star = document.createElement('div');
+        star.className = 'absolute w-1 h-1 bg-white rounded-full';
+        star.style.left = `${Math.random() * 100}%`;
+        star.style.top = `${Math.random() * 100}%`;
+        star.style.opacity = Math.random() * 0.8 + 0.2;
+        starfield.appendChild(star);
+      }
+      
+      // Create civilizations
+      renderCivilizations();
+      
+      // Draw static connections
+      drawConnections();
+    }
+    
+    function renderCivilizations() {
+      const container = document.getElementById('civilizations');
+      container.innerHTML = '';
+      
+      CIVILIZATIONS.forEach(civ => {
+        const isSource = civ.id === 'alpha' && isRunning;
+        const hasArrived = arrivedEvents[civ.id]?.length > 0;
+        const isSelected = selectedCiv === civ.id;
+        const isDimensional = civ.layer !== 0;
+        
+        const div = document.createElement('div');
+        div.className = `absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer transition-all duration-300 ${isSelected ? 'scale-125 z-30' : 'z-20'} ${isDimensional ? 'opacity-70' : ''}`;
+        div.style.left = `${civ.x}%`;
+        div.style.top = `${civ.y}%`;
+        div.onclick = () => selectCivilization(civ.id);
+        
+        // Source glow
+        if (isSource) {
+          const glow = document.createElement('div');
+          glow.className = 'absolute rounded-full animate-ping-custom';
+          glow.style.backgroundColor = civ.color;
+          glow.style.opacity = '0.3';
+          glow.style.width = '60px';
+          glow.style.height = '60px';
+          glow.style.marginLeft = '-15px';
+          glow.style.marginTop = '-15px';
+          div.appendChild(glow);
+        }
+        
+        // Arrival indicator
+        if (hasArrived) {
+          const indicator = document.createElement('div');
+          indicator.className = 'absolute -top-1 -right-1 w-3 h-3 rounded-full bg-green-400 animate-pulse';
+          indicator.style.filter = 'drop-shadow(0 0 4px #4ade80)';
+          div.appendChild(indicator);
+        }
+        
+        // Main circle
+        const circle = document.createElement('div');
+        circle.className = `w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold ${isSelected ? 'ring-2 ring-white ring-offset-2 ring-offset-slate-900' : ''}`;
+        circle.style.backgroundColor = civ.color;
+        circle.style.boxShadow = `0 0 20px ${civ.color}40`;
+        if (isDimensional) circle.style.border = '2px dashed rgba(255,255,255,0.5)';
+        circle.textContent = civ.id[0].toUpperCase();
+        div.appendChild(circle);
+        
+        // Label
+        const label = document.createElement('div');
+        label.className = 'absolute top-12 left-1/2 transform -translate-x-1/2 whitespace-nowrap text-center';
+        label.innerHTML = `
+          <p class="text-xs text-white font-medium">${civ.name}</p>
+          ${isDimensional ? '<p class="text-[10px] text-purple-300">Dimension 1</p>' : ''}
+        `;
+        div.appendChild(label);
+        
+        container.appendChild(div);
+      });
+    }
+    
+    function drawConnections() {
+      const svg = document.getElementById('connectionsSvg');
+      svg.innerHTML = '';
+      
+      // Quantum pairs (dashed purple)
+      CIVILIZATIONS.forEach(civ => {
+        civ.quantumPairs.forEach(pairId => {
+          const pair = CIVILIZATIONS.find(c => c.id === pairId);
+          if (!pair || civ.id > pairId) return;
+          
+          const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+          line.setAttribute('x1', `${civ.x}%`);
+          line.setAttribute('y1', `${civ.y}%`);
+          line.setAttribute('x2', `${pair.x}%`);
+          line.setAttribute('y2', `${pair.y}%`);
+          line.setAttribute('stroke', '#E040FB');
+          line.setAttribute('stroke-width', '1');
+          line.setAttribute('stroke-dasharray', '3,6');
+          line.setAttribute('opacity', '0.3');
+          svg.appendChild(line);
+        });
+      });
+      
+      // Gravity connections (dashed green)
+      CIVILIZATIONS.forEach(civ => {
+        civ.gravityConns.forEach(connId => {
+          const conn = CIVILIZATIONS.find(c => c.id === connId);
+          if (!conn || civ.id > connId) return;
+          
+          const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+          line.setAttribute('x1', `${civ.x}%`);
+          line.setAttribute('y1', `${civ.y}%`);
+          line.setAttribute('x2', `${conn.x}%`);
+          line.setAttribute('y2', `${conn.y}%`);
+          line.setAttribute('stroke', '#69F0AE');
+          line.setAttribute('stroke-width', '1');
+          line.setAttribute('stroke-dasharray', '8,4');
+          line.setAttribute('opacity', '0.3');
+          svg.appendChild(line);
+        });
+      });
+      
+      // Draw active waves
+      waves.forEach(wave => {
+        const source = CIVILIZATIONS.find(c => c.id === wave.sourceId);
+        const target = CIVILIZATIONS.find(c => c.id === wave.targetId);
+        if (!source || !target) return;
+        
+        const progress = wave.progress;
+        const currentX = source.x + (target.x - source.x) * progress;
+        const currentY = source.y + (target.y - source.y) * progress;
+        
+        // Full path (dim)
+        const pathLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        pathLine.setAttribute('x1', `${source.x}%`);
+        pathLine.setAttribute('y1', `${source.y}%`);
+        pathLine.setAttribute('x2', `${target.x}%`);
+        pathLine.setAttribute('y2', `${target.y}%`);
+        pathLine.setAttribute('stroke', wave.color);
+        pathLine.setAttribute('stroke-width', '2');
+        pathLine.setAttribute('opacity', '0.2');
+        svg.appendChild(pathLine);
+        
+        // Progress line (bright)
+        const progressLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        progressLine.setAttribute('x1', `${source.x}%`);
+        progressLine.setAttribute('y1', `${source.y}%`);
+        progressLine.setAttribute('x2', `${currentX}%`);
+        progressLine.setAttribute('y2', `${currentY}%`);
+        progressLine.setAttribute('stroke', wave.color);
+        progressLine.setAttribute('stroke-width', '3');
+        progressLine.setAttribute('opacity', '0.9');
+        progressLine.style.filter = `drop-shadow(0 0 4px ${wave.color})`;
+        svg.appendChild(progressLine);
+        
+        // Moving pulse
+        if (!wave.arrived) {
+          const pulse = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+          pulse.setAttribute('cx', `${currentX}%`);
+          pulse.setAttribute('cy', `${currentY}%`);
+          pulse.setAttribute('r', '5');
+          pulse.setAttribute('fill', wave.color);
+          pulse.style.filter = `drop-shadow(0 0 8px ${wave.color})`;
+          svg.appendChild(pulse);
+        }
+      });
+    }
+    
+    // ============================================================================
+    // SIMULATION
+    // ============================================================================
+    
+    function triggerEvent() {
+      isRunning = true;
+      document.getElementById('triggerBtn').classList.add('hidden');
+      document.getElementById('pauseBtn').classList.remove('hidden');
+      document.getElementById('resetBtn').classList.remove('hidden');
+      document.getElementById('propagationsPanel').classList.remove('hidden');
+      
+      // Initialize waves
+      waves = PROPAGATIONS.map(p => ({
+        ...p,
+        progress: 0,
+        arrived: false
+      }));
+      
+      arrivedEvents = {};
+      renderPropagationCards();
+      renderCivilizations();
+      animate();
+    }
+    
+    function togglePause() {
+      isPaused = !isPaused;
+      document.getElementById('pauseBtn').textContent = isPaused ? '▶️ Resume' : '⏸️ Pause';
+      if (!isPaused) animate();
+    }
+    
+    function resetSimulation() {
+      isRunning = false;
+      isPaused = false;
+      currentTick = 0;
+      waves = [];
+      arrivedEvents = {};
+      selectedCiv = null;
+      
+      if (animationId) cancelAnimationFrame(animationId);
+      
+      document.getElementById('triggerBtn').classList.remove('hidden');
+      document.getElementById('pauseBtn').classList.add('hidden');
+      document.getElementById('resetBtn').classList.add('hidden');
+      document.getElementById('propagationsPanel').classList.add('hidden');
+      document.getElementById('lightConeRing').classList.add('hidden');
+      document.getElementById('year').textContent = '2847';
+      document.getElementById('tick').textContent = 'Tick 0';
+      
+      renderCivilizations();
+      drawConnections();
+      updateDetails();
+    }
+    
+    function animate() {
+      if (isPaused) return;
+      
+      currentTick++;
+      document.getElementById('tick').textContent = `Tick ${currentTick}`;
+      if (currentTick % 10 === 0) {
+        const year = 2847 + Math.floor(currentTick / 10);
+        document.getElementById('year').textContent = year;
+      }
+      
+      // Update light-cone ring
+      const ring = document.getElementById('lightConeRing');
+      ring.classList.remove('hidden');
+      const ringSize = Math.min(currentTick * 1.5, 200);
+      ring.style.width = `${ringSize}%`;
+      ring.style.height = `${ringSize}%`;
+      ring.style.opacity = Math.max(0, 1 - currentTick / 200);
+      
+      // Update waves
+      let anyActive = false;
+      waves.forEach(wave => {
+        if (wave.arrived) return;
+        
+        wave.progress = Math.min(1, wave.progress + (1 / wave.delay));
+        
+        if (wave.progress >= 1 && !wave.arrived) {
+          wave.arrived = true;
+          
+          // Record arrival
+          if (!arrivedEvents[wave.targetId]) arrivedEvents[wave.targetId] = [];
+          arrivedEvents[wave.targetId].push({
+            mechanism: wave.label,
+            year: 2847 + Math.floor(wave.delay / 10),
+            fidelity: wave.fidelity,
+            color: wave.color
+          });
+          
+          renderCivilizations();
+          if (selectedCiv === wave.targetId) updateDetails();
+        }
+        
+        if (!wave.arrived) anyActive = true;
+      });
+      
+      drawConnections();
+      renderPropagationCards();
+      
+      if (anyActive) {
+        animationId = requestAnimationFrame(animate);
+      }
+    }
+    
+    function renderPropagationCards() {
+      const container = document.getElementById('propagationCards');
+      container.innerHTML = '';
+      
+      waves.forEach(wave => {
+        const target = CIVILIZATIONS.find(c => c.id === wave.targetId);
+        
+        const card = document.createElement('div');
+        card.className = `p-3 rounded-lg border ${wave.arrived ? 'bg-green-900/30 border-green-700' : 'bg-slate-700/30 border-slate-600'}`;
+        
+        card.innerHTML = `
+          <div class="flex items-center gap-2 mb-2">
+            <div class="w-2 h-2 rounded-full" style="background-color: ${wave.color}"></div>
+            <span class="text-xs text-slate-300">${wave.label}</span>
+          </div>
+          <p class="text-sm text-white">→ ${target?.name.split(' ')[0]}</p>
+          <div class="mt-2 h-1 bg-slate-600 rounded-full overflow-hidden">
+            <div class="h-full transition-all duration-100" style="width: ${wave.progress * 100}%; background-color: ${wave.color}"></div>
+          </div>
+          <p class="text-xs text-slate-400 mt-1">${wave.arrived ? '✓ Arrived' : `${(wave.progress * 100).toFixed(0)}%`}</p>
+        `;
+        
+        container.appendChild(card);
+      });
+    }
+    
+    // ============================================================================
+    // DETAILS PANEL
+    // ============================================================================
+    
+    function selectCivilization(civId) {
+      selectedCiv = civId;
+      renderCivilizations();
+      updateDetails();
+    }
+    
+    function updateDetails() {
+      const titleEl = document.getElementById('detailsTitle');
+      const contentEl = document.getElementById('detailsContent');
+      
+      if (!selectedCiv) {
+        titleEl.innerHTML = '👁️ Select a Civilization';
+        contentEl.innerHTML = '<p>Click a civilization on the map to see its received events and Chronicler interpretations.</p>';
+        return;
+      }
+      
+      const civ = CIVILIZATIONS.find(c => c.id === selectedCiv);
+      titleEl.innerHTML = `<span style="color: ${civ.color}">📍</span> ${civ.name}`;
+      
+      const arrivals = arrivedEvents[selectedCiv] || [];
+      
+      if (arrivals.length === 0 && selectedCiv !== 'alpha') {
+        contentEl.innerHTML = `
+          <div class="text-center py-8">
+            <p class="text-4xl mb-2">📡</p>
+            <p>No signals received yet</p>
+            <p class="text-xs mt-1">Waiting for propagation...</p>
+          </div>
+        `;
+        return;
+      }
+      
+      // Build arrivals + chronicler
+      let html = '';
+      
+      // Arrivals section
+      if (arrivals.length > 0 || selectedCiv === 'alpha') {
+        html += '<h3 class="font-bold text-white mb-3">📡 Received Signals</h3>';
+        
+        if (selectedCiv === 'alpha') {
+          html += `
+            <div class="p-3 rounded-lg bg-yellow-900/30 border border-yellow-700 mb-4">
+              <span class="inline-block px-2 py-1 rounded text-xs font-medium bg-yellow-600 text-black mb-2">SOURCE</span>
+              <p class="text-sm text-white">The Great Unification</p>
+              <p class="text-xs text-yellow-200/70 mt-1">Origin event - Year 2847</p>
+            </div>
+          `;
+        }
+        
+        arrivals.forEach(arr => {
+          html += `
+            <div class="p-3 rounded-lg bg-slate-700/50 border border-slate-600 mb-3">
+              <div class="flex items-center justify-between mb-2">
+                <span class="inline-block px-2 py-1 rounded text-xs font-medium" style="background-color: ${arr.color}; color: #000">${arr.mechanism}</span>
+                <span class="text-xs text-slate-400">Year ${arr.year}</span>
+              </div>
+              <p class="text-sm text-white">Fidelity: ${(arr.fidelity * 100).toFixed(0)}%</p>
+              <div class="mt-2 pt-2 border-t border-slate-600">
+                <p class="text-xs text-slate-500">Causal Chain:</p>
+                <p class="text-xs text-indigo-300">The Great Unification (Alpha, 2847) → ${arr.mechanism} transmission</p>
+              </div>
+            </div>
+          `;
+        });
+      }
+      
+      // Chronicler section
+      if (arrivals.length > 0 || selectedCiv === 'alpha') {
+        const perspectives = CHRONICLER[selectedCiv];
+        if (perspectives) {
+          html += '<h3 class="font-bold text-white mb-3 mt-6">📜 Chronicler Perspectives</h3>';
+          html += '<p class="text-xs text-slate-400 mb-3">5 interpretations of the received event:</p>';
+          
+          Object.entries(perspectives).forEach(([role, text]) => {
+            html += `
+              <div class="p-3 rounded-lg bg-slate-700/30 border border-slate-600/50 mb-2">
+                <span class="inline-block px-2 py-1 rounded text-xs font-medium bg-slate-600 text-white mb-2 capitalize">The ${role}</span>
+                <p class="text-sm text-slate-200 italic">"${text}"</p>
+              </div>
+            `;
+          });
+        }
+      }
+      
+      contentEl.innerHTML = html;
+    }
+    
+    // Initialize on load
+    init();
+  </script>
+</body>
+</html>
