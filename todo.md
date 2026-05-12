@@ -350,3 +350,33 @@
 - [ ] Verify all performance targets met
 - [ ] Document findings and recommendations
 - [ ] Create Phase 1 completion report
+
+
+## Phase 18: Phase 1 Production Deployment
+
+### Index Deployment
+- [ ] Identify database engine (MySQL/TiDB vs PostgreSQL vs SQLite)
+- [ ] Create staging environment for index testing
+- [ ] Run before-benchmark on cascade lookups and chronology queries
+- [ ] Deploy indexes safely (CONCURRENT for PostgreSQL, direct for SQLite)
+- [ ] Run after-benchmark and document performance improvements
+- [ ] Monitor for table locks during deployment
+- [ ] Verify all 20+ indexes created successfully
+
+### Performance Monitoring Integration
+- [ ] Wire PerformanceDashboard to tRPC endpoints
+- [ ] Establish baseline latency thresholds from benchmarks
+- [ ] Configure alerting for performance degradation
+- [ ] Set up real-time query monitoring
+- [ ] Implement dashboard data persistence
+- [ ] Create performance trend analysis
+- [ ] Document monitoring procedures
+
+### Snapshot Management System
+- [ ] Design snapshot schema and storage format
+- [ ] Implement snapshot creation procedures
+- [ ] Build snapshot compression and archival
+- [ ] Create snapshot recovery procedures
+- [ ] Implement incremental snapshots
+- [ ] Add snapshot versioning and metadata
+- [ ] Build snapshot verification tests

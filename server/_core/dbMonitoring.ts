@@ -257,8 +257,8 @@ class DatabaseMonitor {
    */
   getHealthReport(): {
     status: 'healthy' | 'degraded' | 'critical';
-    queryStats: ReturnType<typeof this.getQueryStats>;
-    connectionStats: ReturnType<typeof this.getConnectionPoolStats>;
+    queryStats: ReturnType<(this: DatabaseMonitor) => ReturnType<DatabaseMonitor['getQueryStats']>>;
+    connectionStats: ReturnType<(this: DatabaseMonitor) => ReturnType<DatabaseMonitor['getConnectionPoolStats']>>;
     recentAlerts: PerformanceAlert[];
     recommendations: string[];
   } {

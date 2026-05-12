@@ -437,16 +437,21 @@ describe('Event Persistence Validation', () => {
 
   describe('Batch Persistence Validation', () => {
     it('should validate successful batch persistence', async () => {
+      const now = new Date().toISOString();
       const events = [
         {
+          id: 'event_1',
           galaxy_id: 'galaxy_1',
           civilization_id: 'civ_1',
           event_type: 'war',
+          created_at: now,
         },
         {
+          id: 'event_2',
           galaxy_id: 'galaxy_1',
           civilization_id: 'civ_2',
           event_type: 'peace',
+          created_at: now,
         },
       ];
 
@@ -456,12 +461,14 @@ describe('Event Persistence Validation', () => {
           galaxy_id: 'galaxy_1',
           civilization_id: 'civ_1',
           event_type: 'war',
+          created_at: now,
         },
         {
           id: 'event_2',
           galaxy_id: 'galaxy_1',
           civilization_id: 'civ_2',
           event_type: 'peace',
+          created_at: now,
         },
       ];
 
@@ -472,16 +479,21 @@ describe('Event Persistence Validation', () => {
     });
 
     it('should detect missing persisted events', async () => {
+      const now = new Date().toISOString();
       const events = [
         {
+          id: 'event_1',
           galaxy_id: 'galaxy_1',
           civilization_id: 'civ_1',
           event_type: 'war',
+          created_at: now,
         },
         {
+          id: 'event_2',
           galaxy_id: 'galaxy_1',
           civilization_id: 'civ_2',
           event_type: 'peace',
+          created_at: now,
         },
       ];
 
@@ -491,6 +503,7 @@ describe('Event Persistence Validation', () => {
           galaxy_id: 'galaxy_1',
           civilization_id: 'civ_1',
           event_type: 'war',
+          created_at: now,
         },
         // Second event missing
       ];

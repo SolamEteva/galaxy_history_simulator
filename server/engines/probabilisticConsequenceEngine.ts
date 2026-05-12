@@ -41,15 +41,18 @@ export function calculateMigrationProbability(context: ConsequenceContext): numb
   let probability = 0.1; // Base probability
 
   // Population pressure factor (0-0.3)
-  const carryingCapacity = affectedCivilization.resources?.carryingCapacity || 1000000;
-  const population = affectedCivilization.resources?.population || 0;
-  const populationPressure = Math.min(1, population / carryingCapacity);
+  // Higher population relative to technology level increases migration pressure
+  const population = affectedCivilization.resources.population || 1000;
+  const technology = affectedCivilization.resources.technology || 1;
+  const carryingCapacityPerTech = 1000 * (1 + technology / 10);
+  const populationPressure = Math.min(1, population / carryingCapacityPerTech);
   probability += populationPressure * 0.3;
 
   // Resource scarcity factor (0-0.25)
-  const foodNeed = affectedCivilization.resources?.foodNeed || 1000;
-  const foodAvailable = affectedCivilization.resources?.food || 0;
-  const foodScarcity = Math.max(0, 1 - (foodAvailable / foodNeed));
+  // Low food relative to population increases migration pressure
+  const food = affectedCivilization.resources.food || 100;
+  const foodNeed = population / 10;
+  const foodScarcity = Math.max(0, 1 - (food / foodNeed));
   probability += foodScarcity * 0.25;
 
   // Civilization traits factor (±0.2)
