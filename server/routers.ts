@@ -13,6 +13,7 @@ import { simulationRouter } from "./routers/simulation";
 import { simulationControlRouter } from "./routers/simulationControl";
 import { eventPersistenceRouter } from "./routers/eventPersistence";
 import { collaborativeSharingRouter } from "./routers/collaborativeSharing";
+import { simulationTickSchedulerRouter } from "./routers/simulationTickScheduler";
 import {
   getUserGalaxies,
   getGalaxy,
@@ -36,6 +37,7 @@ export const appRouter = router({
   simulationControl: simulationControlRouter,
   eventPersistence: eventPersistenceRouter,
   collaborativeSharing: collaborativeSharingRouter,
+  simulationTickScheduler: simulationTickSchedulerRouter,
 
   auth: router({
     me: publicProcedure.query((opts) => opts.ctx.user),

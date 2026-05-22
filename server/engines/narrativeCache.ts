@@ -218,7 +218,7 @@ export class NarrativeBatchProcessor {
   /**
    * Queue narrative generation request
    */
-  async queue(
+  async queueRequest(
     eventId: string,
     civilizationId: string,
     perspective: string

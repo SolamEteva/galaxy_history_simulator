@@ -83,8 +83,8 @@ export function calculateAllianceProbability(context: ConsequenceContext): numbe
   probability += Math.min(0.25, sharedEnemies * 0.1);
 
   // Trade benefits (0-0.2)
-  const sourceTrade = sourceCivilization.resources.trade || 0;
-  const affectedTrade = affectedCivilization.resources.trade || 0;
+  const sourceTrade = sourceCivilization.resources?.trade || 0;
+  const affectedTrade = affectedCivilization.resources?.trade || 0;
   if (sourceTrade > 50 && affectedTrade > 50) {
     probability += 0.2;
   }
@@ -122,8 +122,8 @@ export function calculateConflictProbability(context: ConsequenceContext): numbe
   }
 
   // Resource competition (0-0.2)
-  const sourceResources = (sourceCivilization.resources.food || 0) + (sourceCivilization.resources.trade || 0);
-  const affectedResources = (affectedCivilization.resources.food || 0) + (affectedCivilization.resources.trade || 0);
+  const sourceResources = (sourceCivilization.resources.food || 0) + (sourceCivilization.resources?.trade || 0);
+  const affectedResources = (affectedCivilization.resources.food || 0) + (affectedCivilization.resources?.trade || 0);
   if (sourceResources < 100 && affectedResources > 100) {
     probability += 0.2;
   }
@@ -150,7 +150,7 @@ export function calculateEconomicCrisisProbability(context: ConsequenceContext):
   let probability = 0.05;
 
   // Trade dependency (0-0.25)
-  const trade = affectedCivilization.resources.trade || 0;
+  const trade = affectedCivilization.resources?.trade || 0;
   const totalResources = (affectedCivilization.resources.food || 0) + (affectedCivilization.resources.technology || 0) + trade;
   const tradeDependency = trade / (totalResources + 1);
   probability += tradeDependency * 0.25;
@@ -342,7 +342,7 @@ export function calculatePlagueProbability(context: ConsequenceContext): number 
   probability -= sanitationLevel * 0.2;
 
   // Trade connectivity (0-0.15)
-  const trade = affectedCivilization.resources.trade || 0;
+  const trade = affectedCivilization.resources?.trade || 0;
   if (trade > 50) probability += 0.15;
 
   // Traits (±0.1)

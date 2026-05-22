@@ -84,7 +84,7 @@ export function calculateStateUpdate(
 
     case "alliance":
       // Alliance improves trade, culture, unity
-      update.tradeChange = Math.floor(affectedCivilization.resources.trade * 0.2);
+      update?.tradeChange = Math.floor(affectedCivilization.resources?.trade * 0.2);
       update.cultureChange = Math.floor(affectedCivilization.resources.culture * 0.1);
       update.unityChange = 0.1;
       break;
@@ -92,7 +92,7 @@ export function calculateStateUpdate(
     case "economic_crisis":
       // Economic crisis reduces food, trade, population
       update.foodChange = -Math.floor(affectedCivilization.resources.food * 0.3);
-      update.tradeChange = -Math.floor(affectedCivilization.resources.trade * 0.4);
+      update?.tradeChange = -Math.floor(affectedCivilization.resources?.trade * 0.4);
       update.populationChange = -Math.floor(affectedCivilization.resources.population * 0.03);
       update.unityChange = -0.25;
       break;
@@ -101,7 +101,7 @@ export function calculateStateUpdate(
       // Tech advancement increases technology, culture, trade potential
       update.technologyChange = Math.floor(affectedCivilization.resources.technology * 0.2);
       update.cultureChange = Math.floor(affectedCivilization.resources.culture * 0.1);
-      update.tradeChange = Math.floor(affectedCivilization.resources.trade * 0.15);
+      update?.tradeChange = Math.floor(affectedCivilization.resources?.trade * 0.15);
       update.traitChanges.push({ trait: "innovative", added: true });
       break;
 
@@ -123,7 +123,7 @@ export function calculateStateUpdate(
       // Expansion increases military, population, trade
       update.militaryChange = Math.floor(affectedCivilization.militaryStrength * 0.15);
       update.populationChange = Math.floor(affectedCivilization.resources.population * 0.05);
-      update.tradeChange = Math.floor(affectedCivilization.resources.trade * 0.2);
+      update?.tradeChange = Math.floor(affectedCivilization.resources?.trade * 0.2);
       update.unityChange = 0.1;
       break;
 
@@ -131,7 +131,7 @@ export function calculateStateUpdate(
       // Plague severely reduces population, food, trade
       update.populationChange = -Math.floor(affectedCivilization.resources.population * 0.15);
       update.foodChange = -Math.floor(affectedCivilization.resources.food * 0.2);
-      update.tradeChange = -Math.floor(affectedCivilization.resources.trade * 0.3);
+      update?.tradeChange = -Math.floor(affectedCivilization.resources?.trade * 0.3);
       update.unityChange = -0.2;
       break;
 
@@ -139,7 +139,7 @@ export function calculateStateUpdate(
       // Discovery increases technology, culture, trade
       update.technologyChange = Math.floor(affectedCivilization.resources.technology * 0.15);
       update.cultureChange = Math.floor(affectedCivilization.resources.culture * 0.2);
-      update.tradeChange = Math.floor(affectedCivilization.resources.trade * 0.1);
+      update?.tradeChange = Math.floor(affectedCivilization.resources?.trade * 0.1);
       update.unityChange = 0.1;
       break;
 

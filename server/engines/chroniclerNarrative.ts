@@ -157,7 +157,8 @@ export async function generateChroniclerNarrative(
   });
 
   if (response.choices && response.choices[0]?.message?.content) {
-    return response.choices[0].message.content;
+    const content = response.choices[0].message.content;
+    return typeof content === 'string' ? content : JSON.stringify(content);
   }
 
   throw new Error('Failed to generate narrative from LLM');

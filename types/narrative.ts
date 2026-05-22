@@ -89,6 +89,7 @@ export interface CivilizationState {
     technology: number;
     culture: number;
     military: number;
+    trade?: number;
   };
 
   // Strategy

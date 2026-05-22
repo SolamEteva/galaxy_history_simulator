@@ -57,7 +57,7 @@ export function calculateNetworkDistance(
   }
 
   // Trade route distance
-  if (civ1.resources.trade && civ2.resources.trade) {
+  if (civ1.resources?.trade && civ2.resources?.trade) {
     shortestPath = Math.min(shortestPath, 1.5);
   }
 
