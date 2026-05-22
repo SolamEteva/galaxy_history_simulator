@@ -146,7 +146,7 @@ export function calculateStateUpdate(
     case "first_contact":
       // First contact increases culture, trade, but may reduce unity
       update.cultureChange = Math.floor(affectedCivilization.resources.culture * 0.3);
-      update.tradeChange = Math.floor(affectedCivilization.resources.trade * 0.25);
+      // Trade changes handled by trade network engine
       update.unityChange = -0.05; // Slight disruption from unknown contact
       break;
   }
@@ -158,7 +158,7 @@ export function calculateStateUpdate(
   update.technologyChange = Math.floor(update.technologyChange * importanceMultiplier);
   update.cultureChange = Math.floor(update.cultureChange * importanceMultiplier);
   update.militaryChange = Math.floor(update.militaryChange * importanceMultiplier);
-  update.tradeChange = Math.floor(update.tradeChange * importanceMultiplier);
+  // Trade changes handled by trade network engine
   update.unityChange = update.unityChange * importanceMultiplier;
 
   return update;
@@ -179,7 +179,7 @@ export function applyStateUpdate(
   updated.resources.food = Math.max(0, (updated.resources.food || 0) + update.foodChange);
   updated.resources.technology = Math.max(0, (updated.resources.technology || 0) + update.technologyChange);
   updated.resources.culture = Math.max(0, (updated.resources.culture || 0) + update.cultureChange);
-  updated.resources.trade = Math.max(0, (updated.resources.trade || 0) + update.tradeChange);
+  // Trade updates handled by trade network engine
 
   // Apply military change
   updated.militaryStrength = Math.max(0, (updated.militaryStrength || 0) + update.militaryChange);
