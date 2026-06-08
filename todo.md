@@ -33,8 +33,8 @@
 - [x] Create legends chronicle viewer (chronological history display)
 - [x] Build interactive timeline visualization (all events, filterable by species/type)
 - [x] Implement species encyclopedia/database viewer (evolution, achievements, extinctions)
-- [ ] Create civilization tracker (rise, peak, fall of each civilization)
-- [ ] Build event interconnection visualizer (cause-effect chains)
+- [x] Create civilization tracker (rise, peak, fall of each civilization) - CivilizationTracker component
+- [x] Build event interconnection visualizer (cause-effect chains) - EventInterconnectionVisualizer component
 - [x] Implement search and filter across entire history (EventFilterAndSearch + searchEvents endpoint)
 - [x] Create detailed event viewer with context and consequences
 

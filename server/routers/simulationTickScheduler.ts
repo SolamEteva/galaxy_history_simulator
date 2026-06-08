@@ -75,6 +75,7 @@ export const simulationTickSchedulerRouter = router({
       const simulation = await initializeSimulation(config);
 
       return {
+        history,
         success: true,
         galaxyId: config.galaxyId,
         state: simulation.getStateSnapshot(),
@@ -95,6 +96,7 @@ export const simulationTickSchedulerRouter = router({
       simulation.start();
 
       return {
+        history,
         success: true,
         message: 'Simulation started',
         state: simulation.getStateSnapshot(),
@@ -115,6 +117,7 @@ export const simulationTickSchedulerRouter = router({
       simulation.pause();
 
       return {
+        history,
         success: true,
         message: 'Simulation paused',
         state: simulation.getStateSnapshot(),
@@ -135,6 +138,7 @@ export const simulationTickSchedulerRouter = router({
       simulation.stop();
 
       return {
+        history,
         success: true,
         message: 'Simulation stopped and reset',
         state: simulation.getStateSnapshot(),
@@ -160,6 +164,7 @@ export const simulationTickSchedulerRouter = router({
       simulation.setSpeed(input.speed);
 
       return {
+        history,
         success: true,
         message: `Simulation speed set to ${input.speed}x`,
         speed: input.speed,
@@ -181,6 +186,7 @@ export const simulationTickSchedulerRouter = router({
       await simulation.tick();
 
       return {
+        history,
         success: true,
         message: 'Tick executed',
         state: simulation.getStateSnapshot(),
@@ -240,6 +246,7 @@ export const simulationTickSchedulerRouter = router({
       await simulation.injectEvent(event);
 
       return {
+        history,
         success: true,
         message: 'Event injected',
         eventId: event.id,
@@ -261,6 +268,7 @@ export const simulationTickSchedulerRouter = router({
       const state = simulation.getStateSnapshot();
 
       return {
+        history,
         galaxyId: state.galaxyId,
         currentYear: state.currentYear,
         tick: state.tick,
@@ -302,6 +310,7 @@ export const simulationTickSchedulerRouter = router({
       const events = state.eventHistory.slice(-input.limit - input.offset, -input.offset || undefined).reverse();
 
       return {
+        history,
         events: events.map((e) => ({
           id: e.id,
           title: e.title,
@@ -384,6 +393,7 @@ export const simulationTickSchedulerRouter = router({
       const paginated = scored.slice(input.offset, input.offset + input.limit);
 
       return {
+        history,
         events: paginated.map((item) => ({
           id: item.event.id,
           title: item.event.title,
@@ -421,6 +431,7 @@ export const simulationTickSchedulerRouter = router({
       const cascades = state.cascades.slice(-input.limit - input.offset, -input.offset || undefined).reverse();
 
       return {
+        history,
         cascades: cascades.map((c) => ({
           id: c.id,
           triggerId: c.triggerId,
@@ -460,6 +471,7 @@ export const simulationTickSchedulerRouter = router({
       }
 
       return {
+        history,
         id: cascade.id,
         triggerId: cascade.triggerId,
         year: cascade.year,
@@ -502,6 +514,7 @@ export const simulationTickSchedulerRouter = router({
       }
 
       return {
+        history,
         id: civ.id,
         name: civ.name,
         year: civ.year,
@@ -518,6 +531,7 @@ export const simulationTickSchedulerRouter = router({
           value: t.value,
           category: t.category,
         })),
+        history,
       };
     }),
 
@@ -546,6 +560,7 @@ export const simulationTickSchedulerRouter = router({
       const avgCascadeSize = state.cascades.length > 0 ? state.cascades.reduce((sum, c) => sum + c.events.length, 0) / state.cascades.length : 0;
 
       return {
+        history,
         totalYears: state.currentYear - simulationConfigs.get(input.galaxyId)?.startYear || 0,
         totalTicks: state.tick,
         totalEvents: state.eventHistory.length,
@@ -556,6 +571,60 @@ export const simulationTickSchedulerRouter = router({
         civilizationCount: state.civilizations.size,
         isRunning: state.isRunning,
         currentSpeed: state.speed,
+      };
+    }),
+
+  /**
+   * Get causal chains for a galaxy
+   */
+  getCausalChains: protectedProcedure
+    .input(z.object({ galaxyId: z.string() }))
+    .query(async ({ input }) => {
+      const simulation = getSimulation(input.galaxyId);
+      if (!simulation) {
+        throw new Error(`Simulation ${input.galaxyId} not found`);
+      }
+
+      const state = simulation.getStateSnapshot();
+      const chains: any[] = [];
+
+      // Build causal chains from cascades
+      for (const cascade of state.cascades) {
+        if (cascade.events.length === 0) continue;
+
+        const rootEvent = cascade.events[0];
+        const consequences = cascade.events.slice(1).map((evt: any, idx: number) => ({
+          event: {
+            id: evt.id,
+            title: evt.title,
+            year: evt.year,
+            importance: evt.importance,
+            eventType: evt.eventType,
+            causalStrength: evt.causalStrength,
+            involvedCivilizations: evt.involvedCivilizations,
+          },
+          strength: Math.max(0.3, 1 - idx * 0.15), // Decay strength with depth
+          depth: idx + 1,
+        }));
+
+        chains.push({
+          rootEvent: {
+            id: rootEvent.id,
+            title: rootEvent.title,
+            year: rootEvent.year,
+            importance: rootEvent.importance,
+            eventType: rootEvent.eventType,
+            causalStrength: rootEvent.causalStrength,
+            involvedCivilizations: rootEvent.involvedCivilizations,
+          },
+          consequences,
+        });
+      }
+
+      return {
+        history,
+        chains: chains.sort((a: any, b: any) => b.rootEvent.importance - a.rootEvent.importance),
+        total: chains.length,
       };
     }),
 
@@ -575,6 +644,7 @@ export const simulationTickSchedulerRouter = router({
       simulationConfigs.delete(input.galaxyId);
 
       return {
+        history,
         success: true,
         message: `Simulation ${input.galaxyId} deleted`,
       };
