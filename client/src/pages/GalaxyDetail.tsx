@@ -6,6 +6,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { LegendsExportButton } from "@/components/LegendsExportButton";
+import { CivilizationTracker } from "@/components/CivilizationTracker";
+import { EventInterconnectionVisualizer } from "@/components/EventInterconnectionVisualizer";
+import { EventFilterAndSearch } from "@/components/EventFilterAndSearch";
+import { FigureProfileModal } from "@/components/FigureProfileModal";
+import { GenealogyTreeModal } from "@/components/GenealogyTreeModal";
+import { EventImageGallery } from "@/components/EventImageGallery";
 
 export default function GalaxyDetail() {
   const { galaxyId } = useParams<{ galaxyId: string }>();
@@ -90,11 +96,13 @@ export default function GalaxyDetail() {
         </div>
 
         <Tabs value={selectedTab} onValueChange={setSelectedTab}>
-          <TabsList className="grid w-full grid-cols-4 mb-6">
+          <TabsList className="grid w-full grid-cols-6 mb-6">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="species">Species ({species.length})</TabsTrigger>
             <TabsTrigger value="planets">Planets ({planets.length})</TabsTrigger>
             <TabsTrigger value="timeline">Events ({events.length})</TabsTrigger>
+            <TabsTrigger value="search">Search</TabsTrigger>
+            <TabsTrigger value="narrative">Narrative</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview">
@@ -247,6 +255,40 @@ export default function GalaxyDetail() {
                 </Card>
               ))
             )}
+          </TabsContent>
+
+          <TabsContent value="search" className="space-y-4">
+            <EventFilterAndSearch galaxyId={galaxyId || ""} />
+          </TabsContent>
+
+          <TabsContent value="narrative" className="space-y-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div>
+                <h3 className="text-lg font-semibold text-white mb-4">Civilization Arcs</h3>
+                {species.length > 0 ? (
+                  species.map((sp) => (
+                    <div key={sp.id} className="mb-6">
+                      <CivilizationTracker
+                        civilizationId={sp.id.toString()}
+                        galaxyId={galaxyId || ""}
+                        civilizationName={sp.name}
+                      />
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-slate-400">No civilizations to display.</p>
+                )}
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-white mb-4">Causal Chains</h3>
+                <EventInterconnectionVisualizer
+                  galaxyId={galaxyId || ""}
+                  onEventSelect={(event) => {
+                    console.log("Selected event:", event);
+                  }}
+                />
+              </div>
+            </div>
           </TabsContent>
 
           <TabsContent value="timeline" className="space-y-4">

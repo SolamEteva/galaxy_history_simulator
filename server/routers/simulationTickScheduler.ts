@@ -75,10 +75,11 @@ export const simulationTickSchedulerRouter = router({
       const simulation = await initializeSimulation(config);
 
       return {
-        history,
+        
         success: true,
         galaxyId: config.galaxyId,
         state: simulation.getStateSnapshot(),
+      
       };
     }),
 
@@ -96,10 +97,11 @@ export const simulationTickSchedulerRouter = router({
       simulation.start();
 
       return {
-        history,
+        
         success: true,
         message: 'Simulation started',
         state: simulation.getStateSnapshot(),
+      
       };
     }),
 
@@ -117,10 +119,11 @@ export const simulationTickSchedulerRouter = router({
       simulation.pause();
 
       return {
-        history,
+        
         success: true,
         message: 'Simulation paused',
         state: simulation.getStateSnapshot(),
+      
       };
     }),
 
@@ -138,10 +141,11 @@ export const simulationTickSchedulerRouter = router({
       simulation.stop();
 
       return {
-        history,
+        
         success: true,
         message: 'Simulation stopped and reset',
         state: simulation.getStateSnapshot(),
+      
       };
     }),
 
@@ -186,10 +190,11 @@ export const simulationTickSchedulerRouter = router({
       await simulation.tick();
 
       return {
-        history,
+        
         success: true,
         message: 'Tick executed',
         state: simulation.getStateSnapshot(),
+      
       };
     }),
 
@@ -246,11 +251,12 @@ export const simulationTickSchedulerRouter = router({
       await simulation.injectEvent(event);
 
       return {
-        history,
+        
         success: true,
         message: 'Event injected',
         eventId: event.id,
         state: simulation.getStateSnapshot(),
+      
       };
     }),
 
