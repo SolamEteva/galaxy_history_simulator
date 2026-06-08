@@ -319,6 +319,88 @@ export const simulationTickSchedulerRouter = router({
     }),
 
   /**
+   * Search events across full history
+   */
+  searchEvents: protectedProcedure
+    .input(
+      z.object({
+        galaxyId: z.string(),
+        query: z.string().min(1),
+        eventTypes: z.array(z.string()).optional(),
+        civilizations: z.array(z.string()).optional(),
+        importanceMin: z.number().min(0).max(10).optional(),
+        importanceMax: z.number().min(0).max(10).optional(),
+        yearMin: z.number().optional(),
+        yearMax: z.number().optional(),
+        cascadeOnly: z.boolean().optional(),
+        limit: z.number().int().min(1).max(500).default(100),
+        offset: z.number().int().min(0).default(0),
+      })
+    )
+    .query(async ({ input }) => {
+      const simulation = getSimulation(input.galaxyId);
+      if (!simulation) {
+        throw new Error(`Simulation ${input.galaxyId} not found`);
+      }
+
+      const state = simulation.getStateSnapshot();
+      const queryLower = input.query.toLowerCase();
+
+      const filtered = state.eventHistory.filter((e) => {
+        const titleMatch = e.title.toLowerCase().includes(queryLower);
+        const narrativeMatch = e.narrative?.toLowerCase().includes(queryLower) || false;
+        if (!titleMatch && !narrativeMatch) return false;
+
+        if (input.eventTypes && input.eventTypes.length > 0) {
+          if (!input.eventTypes.includes(e.eventType)) return false;
+        }
+
+        if (input.civilizations && input.civilizations.length > 0) {
+          const hasCiv = input.civilizations.some((civ) => (e.involvedCivilizations as any).includes(civ));
+          if (!hasCiv) return false;
+        }
+
+        if (input.importanceMin !== undefined && e.importance < input.importanceMin) return false;
+        if (input.importanceMax !== undefined && e.importance > input.importanceMax) return false;
+        if (input.yearMin !== undefined && e.year < input.yearMin) return false;
+        if (input.yearMax !== undefined && e.year > input.yearMax) return false;
+        if (input.cascadeOnly && e.causalStrength < 0.7) return false;
+
+        return true;
+      });
+
+      const scored = filtered.map((e) => {
+        let score = 0;
+        if (e.title.toLowerCase().includes(queryLower)) score += 100;
+        if (e.narrative?.toLowerCase().includes(queryLower)) score += 25;
+        return { event: e, score };
+      });
+
+      scored.sort((a, b) => {
+        if (b.score !== a.score) return b.score - a.score;
+        return b.event.year - a.event.year;
+      });
+
+      const paginated = scored.slice(input.offset, input.offset + input.limit);
+
+      return {
+        events: paginated.map((item) => ({
+          id: item.event.id,
+          title: item.event.title,
+          eventType: item.event.eventType,
+          year: item.event.year,
+          importance: item.event.importance,
+          causalStrength: item.event.causalStrength,
+          involvedCivilizations: item.event.involvedCivilizations,
+          narrative: item.event.narrative,
+        })),
+        total: filtered.length,
+        limit: input.limit,
+        offset: input.offset,
+      };
+    }),
+
+  /**
    * Get cascades
    */
   getCascades: protectedProcedure

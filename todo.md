@@ -35,8 +35,17 @@
 - [x] Implement species encyclopedia/database viewer (evolution, achievements, extinctions)
 - [ ] Create civilization tracker (rise, peak, fall of each civilization)
 - [ ] Build event interconnection visualizer (cause-effect chains)
-- [ ] Implement search and filter across entire history
+- [x] Implement search and filter across entire history (EventFilterAndSearch + searchEvents endpoint)
 - [x] Create detailed event viewer with context and consequences
+
+## Real-Time Simulation Infrastructure (COMPLETE)
+- [x] Implement server-side WebSocket endpoint for real-time broadcasting
+- [x] Create interactive Civilization Map with animated trade routes
+- [x] Build Event Filtering and Full-Text Search UI with backend integration
+- [x] Implement searchEvents tRPC endpoint for full-history searching
+- [x] Write comprehensive tests for WebSocket server
+- [x] Write comprehensive tests for Event Filter and Search
+- [x] Write comprehensive tests for Civilization Map visualization
 
 ## Image Generation
 - [x] Integrate image generation for key historical events
@@ -79,6 +88,9 @@
 - [ ] Test document generation and formatting
 - [ ] Refine event generation prompts based on output quality
 - [ ] Performance optimization for large simulations
+- [ ] Integration test: WebSocket broadcasting with real events
+- [ ] Integration test: Civilization Map real-time updates
+- [ ] Integration test: Event Filter search accuracy
 
 ## UI Components for Genealogy, Search & Timeline (NEW)
 - [x] Build GenealogyTreeVisualizer component with interactive family lineages
