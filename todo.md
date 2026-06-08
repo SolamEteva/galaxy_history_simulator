@@ -106,8 +106,9 @@
 - [x] Display achievement compound effects over time
 - [x] Create figure-event relationship visualization
 - [x] Add interactive tooltips showing figure details on hover
-- [ ] Implement figure profile modal from timeline clicks
-- [ ] Add genealogy tree modal from timeline figure references
+- [x] Implement figure profile modal from timeline clicks - FigureProfileModal component
+- [x] Add genealogy tree modal from timeline figure references - GenealogyTreeModal component
+- [x] Build image gallery for major events - EventImageGallery component
 
 ## AI Agent System - Cosmic Forge (RENAMING COMPLETE)
 - [x] Rename Mossbot to Cosmic Forge in agent system files

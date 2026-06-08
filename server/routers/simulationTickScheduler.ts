@@ -514,7 +514,6 @@ export const simulationTickSchedulerRouter = router({
       }
 
       return {
-        history,
         id: civ.id,
         name: civ.name,
         year: civ.year,
@@ -560,7 +559,6 @@ export const simulationTickSchedulerRouter = router({
       const avgCascadeSize = state.cascades.length > 0 ? state.cascades.reduce((sum, c) => sum + c.events.length, 0) / state.cascades.length : 0;
 
       return {
-        history,
         totalYears: state.currentYear - simulationConfigs.get(input.galaxyId)?.startYear || 0,
         totalTicks: state.tick,
         totalEvents: state.eventHistory.length,
@@ -622,7 +620,6 @@ export const simulationTickSchedulerRouter = router({
       }
 
       return {
-        history,
         chains: chains.sort((a: any, b: any) => b.rootEvent.importance - a.rootEvent.importance),
         total: chains.length,
       };
@@ -644,7 +641,6 @@ export const simulationTickSchedulerRouter = router({
       simulationConfigs.delete(input.galaxyId);
 
       return {
-        history,
         success: true,
         message: `Simulation ${input.galaxyId} deleted`,
       };
