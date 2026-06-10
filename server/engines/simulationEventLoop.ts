@@ -397,7 +397,7 @@ export class SimulationEventLoop extends EventEmitter {
         year: this.state.currentYear,
         events: cascadeEvents,
         severity,
-        affectedCivilizations: Array.from(affectedCivilizations),
+        affectedCivilizations: Array.from(affectedCivilizations).map(String),
         status: 'active',
       };
     }
@@ -414,8 +414,8 @@ export class SimulationEventLoop extends EventEmitter {
     tickCascades: CascadeInstance[]
   ): Promise<void> {
     // Filter events relevant to this civilization
-    const relevantEvents = tickEvents.filter((e) => e.involvedCivilizations.includes(civState.id));
-    const relevantCascades = tickCascades.filter((c) => c.affectedCivilizations.includes(civState.id));
+    const relevantEvents = tickEvents.filter((e) => e.involvedCivilizations.includes(String(civState.id)));
+    const relevantCascades = tickCascades.filter((c) => c.affectedCivilizations.includes(String(civState.id)));
 
     // Update emotional state based on events
     for (const event of relevantEvents) {

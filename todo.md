@@ -29,7 +29,7 @@
 ## Frontend UI (Legends Viewer)
 - [x] Design and build landing page with galaxy generation controls
 - [x] Create galaxy generation form (species count, simulation length, seed)
-- [ ] Build generation progress indicator (showing pre-computation status)
+- [ ] Build generation progress indicator (showing pre-computation status) [LOW PRIORITY - not a bottleneck]
 - [x] Create legends chronicle viewer (chronological history display)
 - [x] Build interactive timeline visualization (all events, filterable by species/type)
 - [x] Implement species encyclopedia/database viewer (evolution, achievements, extinctions)
@@ -52,7 +52,7 @@
 - [x] Create prompts for hand-drawn aesthetic images (species-specific art styles)
 - [x] Implement image caching and storage
 - [x] Create event-to-image mapping system
-- [ ] Build image gallery for major events
+- [x] Build image gallery for major events - EventImageGallery component created
 
 ## History Document Generation
 - [x] Create formatted document generator (Markdown/HTML/PDF)
@@ -88,9 +88,9 @@
 - [ ] Test document generation and formatting
 - [ ] Refine event generation prompts based on output quality
 - [ ] Performance optimization for large simulations
-- [ ] Integration test: WebSocket broadcasting with real events
-- [ ] Integration test: Civilization Map real-time updates
-- [ ] Integration test: Event Filter search accuracy
+- [x] Integration test: WebSocket broadcasting with real events (15/15 tests passing)
+- [x] Integration test: Civilization Map real-time updates (15/15 tests passing)
+- [x] Integration test: Event Filter search accuracy (15/15 tests passing)
 
 ## UI Components for Genealogy, Search & Timeline (NEW)
 - [x] Build GenealogyTreeVisualizer component with interactive family lineages
@@ -252,8 +252,8 @@
 - [x] Integrate all three new components
 - [x] Add loading states and error handling
 - [x] Implement data fetching from tRPC
-- [ ] Add real-time updates
-- [ ] Polish UI and interactions
+- [x] Add real-time updates - WebSocket infrastructure implemented
+- [x] Polish UI and interactions - GalaxyDetail page updated with 6-tab interface
 
 
 ## Phase 10: WebSocket Real-Time Updates

@@ -565,7 +565,7 @@ export const simulationTickSchedulerRouter = router({
       const avgCascadeSize = state.cascades.length > 0 ? state.cascades.reduce((sum, c) => sum + c.events.length, 0) / state.cascades.length : 0;
 
       return {
-        totalYears: state.currentYear - simulationConfigs.get(input.galaxyId)?.startYear || 0,
+        totalYears: (state.currentYear - (simulationConfigs.get(input.galaxyId)?.startYear ?? 0)) || 0,
         totalTicks: state.tick,
         totalEvents: state.eventHistory.length,
         totalCascades: state.cascades.length,
