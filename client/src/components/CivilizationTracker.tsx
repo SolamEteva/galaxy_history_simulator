@@ -315,7 +315,7 @@ export function CivilizationTracker({
   const states: CivilizationState[] = useMemo(() => {
     if (!historyData?.history) return [];
 
-    return historyData.history.map((h) => ({
+    return (Array.isArray(historyData.history) ? historyData.history : []).map((h: any) => ({
       year: h.year,
       population: h.population,
       technology: h.technology,

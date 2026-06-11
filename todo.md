@@ -81,6 +81,20 @@
 - [x] Run all tests and ensure they pass (33/33 error handling tests passed)
 - [ ] Add integration tests for end-to-end galaxy generation
 
+## UI/UX Overhaul (PHASE 1.5 - IN PROGRESS)
+- [x] Remove all emoji from UI (replace with subtle icons or text) - Home page redesigned
+- [x] Redesign color palette - move to professional, sophisticated colors (no neon) - Design system created
+- [x] Establish professional typography system (font choices, sizing, hierarchy) - Typography tokens added
+- [x] Create design tokens for spacing, shadows, borders (serious aesthetic) - Design tokens in index.css
+- [x] Redesign home page - professional card layout without emoji - New Home.tsx complete
+- [ ] Fix mobile responsiveness - eliminate overlapping text, mobile-first approach
+- [ ] Redesign GalaxyDetail tabs - professional styling, better visual hierarchy
+- [ ] Create intentional loading states (professional, not generic spinners)
+- [ ] Add subtle micro-interactions (hover states, transitions)
+- [ ] Redesign all modals with professional styling
+- [ ] Test on mobile devices - ensure no overlapping, proper spacing
+- [ ] Create consistent visual language across all pages
+
 ## Testing & Refinement
 - [ ] Test simulation engine with sample parameters
 - [ ] Test LLM integration and event generation quality

@@ -209,7 +209,7 @@ export function propagateWave(
   // Iterate through all civilizations
   for (const [civId, civ] of allCivilizations) {
     // Skip source civilization and already affected civilizations
-    if (civId === sourceCivilization.id || previousWaveAffected.has(civId)) {
+    if (civId === String(sourceCivilization.id) || previousWaveAffected.has(civId)) {
       continue;
     }
 
@@ -279,9 +279,9 @@ export function propagateCascade(context: CascadeContext): CascadeWave[] {
   let totalEvents = 0;
 
   // Initial wave includes direct participants
-  allAffectedCivilizations.add(context.sourceCivilization.id);
+  allAffectedCivilizations.add(String(context.sourceCivilization.id));
   for (const civId of context.sourceEvent.involvedCivilizations) {
-    allAffectedCivilizations.add(civId);
+    allAffectedCivilizations.add(String(civId));
   }
 
   // Propagate through waves

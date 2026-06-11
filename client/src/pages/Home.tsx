@@ -1,10 +1,10 @@
-import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, Sparkles, BookOpen, Zap, Users, Calendar, TreePine, Zap as ZapIcon } from "lucide-react";
+import { Loader2, BookOpen, Zap, Users, Calendar, TreePine, Network } from "lucide-react";
 import { APP_LOGO, APP_TITLE, getLoginUrl } from "@/const";
 import { trpc } from "@/lib/trpc";
+import { useAuth } from "@/hooks/useAuth";
 import { useState } from "react";
 import { useLocation, Link } from "wouter";
 import { toast } from "sonner";
@@ -57,143 +57,185 @@ export default function Home() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 to-slate-800">
-        <Loader2 className="animate-spin w-8 h-8 text-blue-400" />
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-center">
+          <Loader2 className="animate-spin w-8 h-8 text-primary mx-auto mb-4" />
+          <p className="text-muted-foreground">Loading...</p>
+        </div>
       </div>
     );
   }
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 to-slate-800 px-4">
-        <div className="text-center max-w-2xl">
-          <div className="mb-8">
-            <Sparkles className="w-16 h-16 text-blue-400 mx-auto mb-4" />
-            <h1 className="text-5xl font-bold text-white mb-4">{APP_TITLE}</h1>
-            <p className="text-xl text-slate-300 mb-2">
-              Generate entire galaxy histories inspired by Dwarf Fortress world generation
+      <div className="min-h-screen flex flex-col items-center justify-center bg-background px-4 py-8">
+        <div className="max-w-2xl w-full text-center">
+          {/* Logo & Title */}
+          <div className="mb-12">
+            {APP_LOGO && (
+              <img 
+                src={APP_LOGO} 
+                alt={APP_TITLE}
+                className="w-16 h-16 mx-auto mb-6 opacity-90"
+              />
+            )}
+            <h1 className="text-5xl md:text-6xl font-bold text-foreground mb-4 tracking-tight">
+              {APP_TITLE}
+            </h1>
+            <p className="text-lg text-muted-foreground mb-3 leading-relaxed">
+              Generate entire galaxy histories with thousands of years of interconnected civilizations
             </p>
-            <p className="text-slate-400">
-              Watch thousands of years of interconnected civilizations, wars, discoveries, and spaceflight unfold
+            <p className="text-base text-muted-foreground/80">
+              Explore the rise and fall of species, wars, discoveries, and the complex dynamics of conscious civilizations
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-            <Card className="bg-slate-800 border-slate-700">
-              <CardHeader>
-                <Zap className="w-6 h-6 text-yellow-400 mb-2" />
-                <CardTitle className="text-white">Pre-Computed History</CardTitle>
+          {/* Feature Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
+            <Card className="border-border/50 bg-card/50 backdrop-blur-sm hover:bg-card/70 transition-colors">
+              <CardHeader className="pb-3">
+                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mb-3">
+                  <Network className="w-5 h-5 text-primary" />
+                </div>
+                <CardTitle className="text-lg">Causal Backbone</CardTitle>
               </CardHeader>
-              <CardContent className="text-slate-300 text-sm">
-                Entire galaxy histories generated upfront with deep cause-effect chains
+              <CardContent>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  Every event is grounded in cause-effect chains. History unfolds with logical coherence, not randomness.
+                </p>
               </CardContent>
             </Card>
 
-            <Card className="bg-slate-800 border-slate-700">
-              <CardHeader>
-                <BookOpen className="w-6 h-6 text-blue-400 mb-2" />
-                <CardTitle className="text-white">Legends Chronicle</CardTitle>
+            <Card className="border-border/50 bg-card/50 backdrop-blur-sm hover:bg-card/70 transition-colors">
+              <CardHeader className="pb-3">
+                <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center mb-3">
+                  <BookOpen className="w-5 h-5 text-accent" />
+                </div>
+                <CardTitle className="text-lg">Narrative Depth</CardTitle>
               </CardHeader>
-              <CardContent className="text-slate-300 text-sm">
-                Explore interconnected events, species evolution, and civilizational arcs
+              <CardContent>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  Explore interconnected events, civilizational arcs, and the philosophical dynamics underlying history.
+                </p>
               </CardContent>
             </Card>
 
-            <Card className="bg-slate-800 border-slate-700">
-              <CardHeader>
-                <Sparkles className="w-6 h-6 text-purple-400 mb-2" />
-                <CardTitle className="text-white">Illustrated Moments</CardTitle>
+            <Card className="border-border/50 bg-card/50 backdrop-blur-sm hover:bg-card/70 transition-colors">
+              <CardHeader className="pb-3">
+                <div className="w-10 h-10 rounded-lg bg-secondary/10 flex items-center justify-center mb-3">
+                  <Zap className="w-5 h-5 text-secondary" />
+                </div>
+                <CardTitle className="text-lg">Pre-Computed</CardTitle>
               </CardHeader>
-              <CardContent className="text-slate-300 text-sm">
-                Key historical events rendered with hand-drawn aesthetic images
+              <CardContent>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  Entire galaxy histories generated upfront. Instant access to thousands of years of civilization.
+                </p>
               </CardContent>
             </Card>
           </div>
 
+          {/* Sign In Button */}
           <Button
             onClick={() => window.location.href = getLoginUrl()}
             size="lg"
-            className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-6 text-lg"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-6 text-base font-semibold"
           >
-            Sign In to Generate Galaxies
+            Sign In to Begin
           </Button>
+
+          <p className="text-xs text-muted-foreground/60 mt-6">
+            Create an account or sign in with your existing credentials
+          </p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 p-4 md:p-8">
+    <div className="min-h-screen bg-background">
+      {/* Error Banner */}
       {errorDetails && (
-        <div className="max-w-6xl mx-auto mb-4 p-4 bg-red-900 border border-red-700 rounded-lg">
-          <p className="text-red-100 text-sm font-mono break-words">{errorDetails}</p>
-          <button
-            onClick={() => setErrorDetails(null)}
-            className="mt-2 text-xs text-red-300 hover:text-red-100"
-          >
-            Dismiss
-          </button>
+        <div className="bg-destructive/10 border border-destructive/20 px-4 py-3 mb-6">
+          <div className="max-w-7xl mx-auto">
+            <p className="text-sm text-destructive font-mono">{errorDetails}</p>
+            <button
+              onClick={() => setErrorDetails(null)}
+              className="mt-2 text-xs text-destructive/60 hover:text-destructive transition-colors"
+            >
+              Dismiss
+            </button>
+          </div>
         </div>
       )}
-      <div className="max-w-6xl mx-auto">
+
+      <div className="container py-8 md:py-12">
         {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-6">
+        <div className="mb-12">
+          <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
             <div className="flex items-center gap-3">
-              <Sparkles className="w-8 h-8 text-blue-400" />
-              <h1 className="text-3xl font-bold text-white">{APP_TITLE}</h1>
+              {APP_LOGO && (
+                <img 
+                  src={APP_LOGO} 
+                  alt={APP_TITLE}
+                  className="w-8 h-8 opacity-80"
+                />
+              )}
+              <h1 className="text-3xl font-bold text-foreground">{APP_TITLE}</h1>
             </div>
-            <div className="text-slate-400">
-              Welcome, <span className="text-white font-semibold">{user?.name}</span>
+            <div className="text-sm text-muted-foreground">
+              Welcome, <span className="text-foreground font-semibold">{user?.name}</span>
             </div>
           </div>
-          <p className="text-slate-300 mb-4">
-            Generate pre-computed galaxy histories with thousands of years of interconnected events
+          <p className="text-base text-muted-foreground mb-6 max-w-2xl">
+            Configure and generate new galaxy histories, or explore your existing simulations
           </p>
+
           {/* Navigation Links */}
-          <div className="flex gap-3 flex-wrap">
+          <div className="flex gap-2 flex-wrap">
             <Link href="/genealogy">
-              <Button variant="outline" size="sm" className="border-slate-600 text-slate-300 hover:bg-slate-700">
-                <TreePine className="w-4 h-4 mr-2" />
+              <Button variant="outline" size="sm" className="gap-2">
+                <TreePine className="w-4 h-4" />
                 Genealogies
               </Button>
             </Link>
             <Link href="/figures">
-              <Button variant="outline" size="sm" className="border-slate-600 text-slate-300 hover:bg-slate-700">
-                <Users className="w-4 h-4 mr-2" />
-                Notable Figures
+              <Button variant="outline" size="sm" className="gap-2">
+                <Users className="w-4 h-4" />
+                Figures
               </Button>
             </Link>
             <Link href="/timeline">
-              <Button variant="outline" size="sm" className="border-slate-600 text-slate-300 hover:bg-slate-700">
-                <Calendar className="w-4 h-4 mr-2" />
+              <Button variant="outline" size="sm" className="gap-2">
+                <Calendar className="w-4 h-4" />
                 Timeline
               </Button>
             </Link>
             <Link href="/agent">
-              <Button variant="outline" size="sm" className="border-slate-600 text-slate-300 hover:bg-slate-700">
-                <Zap className="w-4 h-4 mr-2" />
-                AI Agent
+              <Button variant="outline" size="sm" className="gap-2">
+                <Zap className="w-4 h-4" />
+                Agent
               </Button>
             </Link>
           </div>
         </div>
 
+        {/* Main Content */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Generation Form */}
           <div className="lg:col-span-2">
-            <Card className="bg-slate-800 border-slate-700">
+            <Card>
               <CardHeader>
-                <CardTitle className="text-white">Generate New Galaxy</CardTitle>
-                <CardDescription className="text-slate-400">
-                  Configure parameters for your galaxy history simulation
+                <CardTitle>Generate Galaxy</CardTitle>
+                <CardDescription>
+                  Configure parameters for your simulation
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleGenerateGalaxy} className="space-y-6">
                   {/* Galaxy Name */}
                   <div>
-                    <label className="block text-sm font-medium text-slate-300 mb-2">
+                    <label className="block text-sm font-medium text-foreground mb-2">
                       Galaxy Name
                     </label>
                     <Input
@@ -201,113 +243,115 @@ export default function Home() {
                       placeholder="e.g., Andromeda Prime, The Eternal Spiral"
                       value={galaxyName}
                       onChange={(e) => setGalaxyName(e.target.value)}
-                      className="bg-slate-700 border-slate-600 text-white placeholder-slate-500"
                       disabled={isGenerating}
+                      className="bg-card border-border"
                     />
                   </div>
 
                   {/* Species Count */}
                   <div>
-                    <label className="block text-sm font-medium text-slate-300 mb-2">
-                      Number of Species: <span className="text-blue-400 font-semibold">{speciesCount}</span>
-                    </label>
+                    <div className="flex items-center justify-between mb-3">
+                      <label className="text-sm font-medium text-foreground">
+                        Number of Species
+                      </label>
+                      <span className="text-sm font-semibold text-primary">
+                        {speciesCount}
+                      </span>
+                    </div>
                     <input
                       type="range"
                       min="1"
                       max="8"
                       value={speciesCount}
                       onChange={(e) => setSpeciesCount(parseInt(e.target.value))}
-                      className="w-full"
                       disabled={isGenerating}
+                      className="w-full h-2 bg-muted rounded-lg appearance-none cursor-pointer"
                     />
-                    <p className="text-xs text-slate-400 mt-2">
-                      More species = more complex interactions and conflicts
+                    <p className="text-xs text-muted-foreground mt-2">
+                      More species increase complexity and interaction depth
+                    </p>
+                  </div>
+
+                  {/* Total Years */}
+                  <div>
+                    <div className="flex items-center justify-between mb-3">
+                      <label className="text-sm font-medium text-foreground">
+                        Simulation Duration
+                      </label>
+                      <span className="text-sm font-semibold text-primary">
+                        {totalYears.toLocaleString()} years
+                      </span>
+                    </div>
+                    <input
+                      type="range"
+                      min="5000"
+                      max="100000"
+                      step="5000"
+                      value={totalYears}
+                      onChange={(e) => setTotalYears(parseInt(e.target.value))}
+                      disabled={isGenerating}
+                      className="w-full h-2 bg-muted rounded-lg appearance-none cursor-pointer"
+                    />
+                    <p className="text-xs text-muted-foreground mt-2">
+                      Longer simulations generate more historical depth
                     </p>
                   </div>
 
                   {/* Narrative Depth */}
                   <div>
-                    <label className="block text-sm font-medium text-slate-300 mb-2">
+                    <label className="block text-sm font-medium text-foreground mb-3">
                       Narrative Depth
                     </label>
-                    <div className="flex gap-2 mb-2">
+                    <div className="grid grid-cols-3 gap-2">
                       {(["light", "medium", "deep"] as const).map((depth) => (
                         <button
                           key={depth}
                           type="button"
                           onClick={() => setNarrativeDepth(depth)}
                           disabled={isGenerating}
-                          className={`flex-1 py-2 px-3 rounded text-sm font-medium transition ${
+                          className={`py-2 px-3 rounded text-sm font-medium transition-colors ${
                             narrativeDepth === depth
-                              ? "bg-blue-600 text-white"
-                              : "bg-slate-700 text-slate-300 hover:bg-slate-600 disabled:opacity-50"
+                              ? "bg-primary text-primary-foreground"
+                              : "bg-muted text-muted-foreground hover:bg-muted/80 disabled:opacity-50"
                           }`}
                         >
                           {depth.charAt(0).toUpperCase() + depth.slice(1)}
                         </button>
                       ))}
                     </div>
-                    <p className="text-xs text-slate-400 mb-4">
-                      {narrativeDepth === "light" && "5 narrative events per era - Quick generation"}
-                      {narrativeDepth === "medium" && "15 narrative events per era - Balanced depth"}
-                      {narrativeDepth === "deep" && "30 narrative events per era - Rich, detailed history"}
-                    </p>
-                  </div>
-
-                  {/* Total Years */}
-                  <div>
-                    <label className="block text-sm font-medium text-slate-300 mb-2">
-                      Simulation Length: <span className="text-blue-400 font-semibold">{totalYears.toLocaleString()} years</span>
-                    </label>
-                    <input
-                      type="range"
-                      min="1000"
-                      max="1000000"
-                      step="1000"
-                      value={totalYears}
-                      onChange={(e) => setTotalYears(parseInt(e.target.value))}
-                      className="w-full"
-                      disabled={isGenerating}
-                    />
-                    <p className="text-xs text-slate-400 mt-2">
-                      Longer simulations = more detailed history and events
-                    </p>
                   </div>
 
                   {/* Seed (Optional) */}
                   <div>
-                    <label className="block text-sm font-medium text-slate-300 mb-2">
-                      Random Seed (Optional)
+                    <label className="block text-sm font-medium text-foreground mb-2">
+                      Seed (Optional)
                     </label>
                     <Input
                       type="text"
-                      placeholder="Leave empty for random seed"
+                      placeholder="Leave empty for random generation"
                       value={seed}
                       onChange={(e) => setSeed(e.target.value)}
-                      className="bg-slate-700 border-slate-600 text-white placeholder-slate-500"
                       disabled={isGenerating}
+                      className="bg-card border-border text-sm"
                     />
-                    <p className="text-xs text-slate-400 mt-2">
-                      Use the same seed to regenerate identical galaxy histories
+                    <p className="text-xs text-muted-foreground mt-2">
+                      Use the same seed to regenerate identical galaxies
                     </p>
                   </div>
 
-                  {/* Generate Button */}
+                  {/* Submit Button */}
                   <Button
                     type="submit"
-                    disabled={isGenerating || !galaxyName.trim()}
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white py-6 text-lg font-semibold"
+                    disabled={isGenerating}
+                    className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-6"
                   >
                     {isGenerating ? (
                       <>
-                        <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                        Generating Galaxy History...
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Generating...
                       </>
                     ) : (
-                      <>
-                        <Sparkles className="w-5 h-5 mr-2" />
-                        Generate Galaxy
-                      </>
+                      "Generate Galaxy"
                     )}
                   </Button>
                 </form>
@@ -315,51 +359,59 @@ export default function Home() {
             </Card>
           </div>
 
-          {/* Info Panel */}
-          <div className="space-y-4">
-            <Card className="bg-slate-800 border-slate-700">
-              <CardHeader>
-                <CardTitle className="text-white text-lg">How It Works</CardTitle>
-              </CardHeader>
-              <CardContent className="text-slate-300 text-sm space-y-3">
-                <div>
-                  <p className="font-semibold text-white mb-1">1. Configuration</p>
-                  <p>Set the number of species and simulation length</p>
-                </div>
-                <div>
-                  <p className="font-semibold text-white mb-1">2. Pre-Computation</p>
-                  <p>AI generates thousands of years of interconnected history</p>
-                </div>
-                <div>
-                  <p className="font-semibold text-white mb-1">3. Legends Chronicle</p>
-                  <p>Explore the complete history with cause-effect relationships</p>
-                </div>
-                <div>
-                  <p className="font-semibold text-white mb-1">4. Illustrations</p>
-                  <p>Key events are rendered as hand-drawn aesthetic images</p>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-slate-800 border-slate-700">
-              <CardHeader>
-                <CardTitle className="text-white text-lg">Recommended Settings</CardTitle>
-              </CardHeader>
-              <CardContent className="text-slate-300 text-sm space-y-2">
-                <div className="flex justify-between">
-                  <span>Quick Generation:</span>
-                  <span className="text-blue-400">3-5 species, 10k years</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Balanced:</span>
-                  <span className="text-blue-400">5-6 species, 50k years</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Epic Scale:</span>
-                  <span className="text-blue-400">8 species, 100k+ years</span>
-                </div>
-              </CardContent>
-            </Card>
+          {/* Presets Sidebar */}
+          <div>
+            <h3 className="text-sm font-semibold text-foreground mb-4">Quick Presets</h3>
+            <div className="space-y-3">
+              {[
+                {
+                  name: "Quick Start",
+                  species: 3,
+                  years: 5000,
+                  depth: "medium" as const,
+                  description: "Fast generation"
+                },
+                {
+                  name: "Epic Saga",
+                  species: 5,
+                  years: 50000,
+                  depth: "deep" as const,
+                  description: "Deep history"
+                },
+                {
+                  name: "Intimate Story",
+                  species: 2,
+                  years: 10000,
+                  depth: "deep" as const,
+                  description: "Detailed narrative"
+                },
+                {
+                  name: "Vast Cosmos",
+                  species: 8,
+                  years: 100000,
+                  depth: "medium" as const,
+                  description: "Maximum complexity"
+                }
+              ].map((preset) => (
+                <button
+                  key={preset.name}
+                  onClick={() => {
+                    setSpeciesCount(preset.species);
+                    setTotalYears(preset.years);
+                    setNarrativeDepth(preset.depth);
+                    setGalaxyName(preset.name);
+                  }}
+                  disabled={isGenerating}
+                  className="w-full text-left p-3 rounded-lg border border-border/50 bg-card/30 hover:bg-card/60 transition-colors disabled:opacity-50"
+                >
+                  <div className="font-medium text-foreground text-sm">{preset.name}</div>
+                  <div className="text-xs text-muted-foreground mt-1">{preset.description}</div>
+                  <div className="text-xs text-muted-foreground/60 mt-2">
+                    {preset.species} species · {preset.years.toLocaleString()} years
+                  </div>
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>

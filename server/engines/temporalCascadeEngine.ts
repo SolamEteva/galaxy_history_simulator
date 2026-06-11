@@ -205,7 +205,7 @@ export function applyStateUpdate(
   if (update.relationshipChanges.length > 0) {
     updated.relationships = new Map(civilization.relationships || []);
     for (const change of update.relationshipChanges) {
-      const existing = updated.relationships.get(change.civilizationId);
+      const existing = updated.relationships.get(String(change.civilizationId));
       if (existing) {
         existing.alignment = Math.max(-1, Math.min(1, existing.alignment + change.alignmentChange));
       }

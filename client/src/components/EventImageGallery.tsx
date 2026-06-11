@@ -155,7 +155,7 @@ export function EventImageGallery({ event, images, isOpen, onClose }: EventImage
                 <div className="mt-3">
                   <p className="text-slate-400 text-sm mb-2">Involved Civilizations</p>
                   <div className="flex flex-wrap gap-2">
-                    {event.involvedCivilizations.map((civ, idx) => (
+                    {event.involvedCivilizations.map((civ: any, idx: any) => (
                       <span
                         key={idx}
                         className="px-2 py-1 bg-blue-900 text-blue-200 text-xs rounded"

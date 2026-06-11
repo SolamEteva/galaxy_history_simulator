@@ -257,11 +257,11 @@ export function EventInterconnectionVisualizer({
         rootEvent: chain.rootEvent,
         consequences: chain.consequences,
         totalAffected: chain.consequences.length + 1,
-        timeSpan: chain.consequences.length > 0 ? Math.max(...chain.consequences.map((c) => c.event.year)) - chain.rootEvent.year : 0,
+        timeSpan: chain.consequences.length > 0 ? Math.max(...chain.consequences.map((c: any) => c.event.year)) - chain.rootEvent.year : 0,
       }))
       .filter((chain) => {
         if (filterType === 'all') return true;
-        if (filterType === 'critical') return chain.consequences.some((c) => c.strength > 0.7);
+        if (filterType === 'critical') return chain.consequences.some((c: any) => c.strength > 0.7);
         if (filterType === 'long') return chain.timeSpan > 500;
         return true;
       })

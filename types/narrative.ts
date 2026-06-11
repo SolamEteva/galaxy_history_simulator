@@ -36,7 +36,7 @@ export interface EventNode {
   sacredGapScore: number;
 
   // Context
-  involvedCivilizations: number[];
+  involvedCivilizations: string[];
   involvedSpecies: number[];
   involvedFigures: number[];
   eventType: string;

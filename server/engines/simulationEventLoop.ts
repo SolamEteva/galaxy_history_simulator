@@ -215,7 +215,7 @@ export class SimulationEventLoop extends EventEmitter {
           // Only narrative for significant events
           try {
             const causalPackage = buildCausalPackage(event, {
-              allCivilizations: Array.from(this.state.civilizations.values()),
+              allCivilizations: this.state.civilizations,
               allEvents: this.state.eventHistory,
             });
 
@@ -414,7 +414,7 @@ export class SimulationEventLoop extends EventEmitter {
     tickCascades: CascadeInstance[]
   ): Promise<void> {
     // Filter events relevant to this civilization
-    const relevantEvents = tickEvents.filter((e) => e.involvedCivilizations.includes(String(civState.id)));
+    const relevantEvents = tickEvents.filter((e) => e.involvedCivilizations.includes(civState.id));
     const relevantCascades = tickCascades.filter((c) => c.affectedCivilizations.includes(String(civState.id)));
 
     // Update emotional state based on events
