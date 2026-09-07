@@ -436,3 +436,6 @@
 - [x] Complete final credential, generated-artifact, diff, and remote synchronization audit
 - [ ] Save a release checkpoint before GitHub synchronization
 - [ ] Push the verified build to the connected GitHub repository
+
+- [x] Repair visible landing-page styling regression shown in preview: restore design tokens, remove stray emoji/glyphs, fix preset layout hierarchy, and verify responsive spacing
+- [x] Make the redesigned Home page the root route and keep the legacy Launcher available only as an explicit compatibility route

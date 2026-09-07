@@ -15,8 +15,9 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 function Router() {
   return (
     <Switch>
-      <Route path={"/"} component={Launcher} />
+      <Route path={"/"} component={Home} />
       <Route path={"/home"} component={Home} />
+      <Route path={"/launcher"} component={Launcher} />
       <Route path={"/galaxy/:galaxyId"} component={GalaxyDetail} />
       <Route path={"/genealogy"} component={Genealogy} />
       <Route path={"/figures"} component={Figures} />

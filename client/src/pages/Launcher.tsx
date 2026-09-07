@@ -21,7 +21,6 @@ interface GalaxyPreset {
   id: string;
   name: string;
   description: string;
-  icon: string;
   config: {
     speciesCount: number;
     simulationLength: number;
@@ -35,7 +34,6 @@ const PRESETS: GalaxyPreset[] = [
     id: "quick-start",
     name: "Quick Start",
     description: "Fast generation with 3 species, 5,000 years",
-    icon: "⚡",
     config: {
       speciesCount: 3,
       simulationLength: 5000,
@@ -46,7 +44,6 @@ const PRESETS: GalaxyPreset[] = [
     id: "epic-saga",
     name: "Epic Saga",
     description: "Deep history with 5 species, 50,000 years",
-    icon: "🏰",
     config: {
       speciesCount: 5,
       simulationLength: 50000,
@@ -57,7 +54,6 @@ const PRESETS: GalaxyPreset[] = [
     id: "intimate-story",
     name: "Intimate Story",
     description: "Detailed narrative with 2 species, 10,000 years",
-    icon: "💫",
     config: {
       speciesCount: 2,
       simulationLength: 10000,
@@ -68,7 +64,6 @@ const PRESETS: GalaxyPreset[] = [
     id: "vast-cosmos",
     name: "Vast Cosmos",
     description: "Maximum complexity with 8 species, 100,000 years",
-    icon: "🌌",
     config: {
       speciesCount: 8,
       simulationLength: 100000,
@@ -235,7 +230,7 @@ export default function Launcher() {
                   <CardHeader>
                     <div className="flex items-start justify-between">
                       <div>
-                        <div className="text-3xl mb-2">{preset.icon}</div>
+                        <div className="mb-2 h-1 w-10 rounded-full bg-blue-400" aria-hidden="true" />
                         <CardTitle className="text-white">{preset.name}</CardTitle>
                         <CardDescription className="text-slate-400">
                           {preset.description}
