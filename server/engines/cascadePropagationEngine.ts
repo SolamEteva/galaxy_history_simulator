@@ -179,7 +179,7 @@ export function generateConsequenceEvent(
     unityCoefficient: 0.6,
     constraintSatisfaction: 0.85,
     sacredGapScore: 0.4,
-    involvedCivilizations: [affectedCivilization.id],
+    involvedCivilizations: [String(affectedCivilization.id)],
     involvedSpecies: [],
     involvedFigures: [],
     eventType: consequenceType,

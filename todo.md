@@ -407,3 +407,32 @@
 - [ ] Implement incremental snapshots
 - [ ] Add snapshot versioning and metadata
 - [ ] Build snapshot verification tests
+
+## Repository Cleanup & GitHub Synchronization (Current Task)
+- [ ] Inventory tracked files, generated artifacts, and repository status
+- [ ] Identify obsolete or unreferenced files and document deletion rationale
+- [ ] Resolve current TypeScript and runtime build blockers
+- [ ] Streamline repository files and ignore rules without removing active functionality
+- [ ] Run TypeScript compilation, tests, production build, and hygiene checks
+- [ ] Save a checkpoint after validation
+- [ ] Commit and push the verified latest build to GitHub
+- [ ] Verify the remote commit and report remaining blockers
+
+### Findings
+- [x] Local branch is `main` and matches the connected WebDev origin at inventory time
+- [x] GitHub repository identified as `SolamEteva/galaxy_history_simulator`
+- [x] Working tree was clean before current cleanup edits
+- [x] TypeScript errors were concentrated in Home auth import and civilization ID normalization
+- [x] Runtime failure traced to value imports of Drizzle `Insert*` type exports
+- [x] `README_OLD.md` deletion requires final reference/history review
+- [ ] Narrative depth and end-to-end Quick Start smoke test remain deferred until build stabilization
+
+
+## Repository Stewardship & Release Integrity
+- [x] Preserve the project’s core purpose: model conscious dynamics and emergent history through causal simulation, not superficial random storytelling
+- [x] Run full automated test suite: 204/204 tests passing across 11 test files
+- [x] Resolve Tailwind v4 production build failure caused by unsupported global @apply utilities
+- [x] Verify TypeScript compilation and production bundle
+- [x] Complete final credential, generated-artifact, diff, and remote synchronization audit
+- [ ] Save a release checkpoint before GitHub synchronization
+- [ ] Push the verified build to the connected GitHub repository

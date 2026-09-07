@@ -106,3 +106,6 @@ temp/
 *.sqlite
 *.sqlite3
 .project-config.json
+
+# Local WebDev runtime logs
+.manus-logs/

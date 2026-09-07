@@ -198,7 +198,7 @@ export async function retryWithBackoff<T>(
       lastError = error instanceof Error ? error : new Error(String(error));
 
       if (attempt < maxRetries - 1) {
-        const delayMs = initialDelayMs * Math.pow(backoffMultiplier, attempt);
+        const delayMs = initialDelayMs * Math.pow(backoffMultiplier, attempt) + 1;
         console.warn(
           `[Retry] Attempt ${attempt + 1} failed, retrying in ${delayMs}ms:`,
           lastError.message

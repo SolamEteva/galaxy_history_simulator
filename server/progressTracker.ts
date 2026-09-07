@@ -81,6 +81,23 @@ class ProgressTracker {
   }
 
   /**
+   * Record a progress update using the public tracker API.
+   * This keeps direct callers and the emitProgress helper on one path.
+   */
+  update(
+    galaxyId: number,
+    stage: GenerationStage,
+    progress: number,
+    message: string,
+    details?: Record<string, unknown>
+  ): void {
+    if (String(stage) === GenerationStage.INITIALIZING) {
+      this.updates.set(galaxyId, []);
+    }
+    this.emit(createProgressUpdate(galaxyId, stage as GenerationStage, progress, message, details));
+  }
+
+  /**
    * Get progress history for a galaxy
    */
   getHistory(galaxyId: number): ProgressUpdate[] {
@@ -90,9 +107,9 @@ class ProgressTracker {
   /**
    * Get latest progress for a galaxy
    */
-  getLatest(galaxyId: number): ProgressUpdate | undefined {
+  getLatest(galaxyId: number): ProgressUpdate | null {
     const history = this.updates.get(galaxyId);
-    return history?.[history.length - 1];
+    return history?.[history.length - 1] ?? null;
   }
 
   /**

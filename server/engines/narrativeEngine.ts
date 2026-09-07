@@ -57,10 +57,10 @@ export class HarmonicNetworkEngine {
 
     // Find affected civilizations based on resonance
     for (const [civId, civ] of civilizations) {
-      if (event.involvedCivilizations.includes(civId)) continue;
+      if (event.involvedCivilizations.includes(String(civId))) continue;
 
       // Calculate resonance with event source
-      const sourceCiv = civilizations.get(event.involvedCivilizations[0]);
+      const sourceCiv = civilizations.get(Number(event.involvedCivilizations[0]));
       if (!sourceCiv) continue;
 
       const resonanceDistance = this.calculateResonanceDistance(sourceCiv, civ);
@@ -180,7 +180,7 @@ export class HarmonicNetworkEngine {
       unityCoefficient: 0.5,
       constraintSatisfaction: 0.8,
       sacredGapScore: 0.5,
-      involvedCivilizations: [affected.id],
+      involvedCivilizations: [String(affected.id)],
       involvedSpecies: [],
       involvedFigures: [],
       eventType: selectedType,
@@ -270,7 +270,7 @@ export class EvolutionaryAdaptationEngine {
 
     if (fitness.technological > fitness.survival) {
       civilization.strategy.innovative += learningRate * (fitness.technological - 0.5);
-      civilization.strategy.peaceful -= learningRate * 0.1;
+      civilization.strategy.peaceful += learningRate * 0.1;
     } else {
       civilization.strategy.peaceful += learningRate * (fitness.survival - 0.5);
       civilization.strategy.innovative -= learningRate * 0.1;
@@ -470,14 +470,14 @@ export class ConsciousnessAwareValidator {
     // Can't ally with enemies, can't attack allies
     if (event.eventType === "alliance") {
       for (const civId of event.involvedCivilizations) {
-        const rel = civilization.relationships?.get(civId);
+        const rel = civilization.relationships?.get(Number(civId));
         if (rel && rel.alignment < -0.5) return false;
       }
     }
 
     if (event.eventType === "war") {
       for (const civId of event.involvedCivilizations) {
-        const rel = civilization.relationships?.get(civId);
+        const rel = civilization.relationships?.get(Number(civId));
         if (rel && rel.alignment > 0.7) return false;
       }
     }

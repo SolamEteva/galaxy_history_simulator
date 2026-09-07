@@ -1,7 +1,6 @@
 import { eq, and } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import {
-  InsertUser,
   users,
   galaxies,
   species,
@@ -11,6 +10,13 @@ import {
   eventConnections,
   historyDocuments,
   simulationLogs,
+  agentTasks,
+  agentWorkflows,
+  agentConfigurations,
+  agentExecutionHistory,
+} from "../drizzle/schema";
+import type {
+  InsertUser,
   InsertGalaxy,
   InsertSpecies,
   InsertPlanet,
@@ -19,10 +25,6 @@ import {
   InsertEventConnection,
   InsertSimulationLog,
   InsertHistoryDocument,
-  agentTasks,
-  agentWorkflows,
-  agentConfigurations,
-  agentExecutionHistory,
   InsertAgentTask,
   InsertAgentWorkflow,
   InsertAgentConfiguration,
@@ -51,6 +53,8 @@ export {
   agentWorkflows,
   agentConfigurations,
   agentExecutionHistory,
+};
+export type {
   InsertAgentTask,
   InsertAgentWorkflow,
   InsertAgentConfiguration,

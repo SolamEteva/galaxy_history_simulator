@@ -203,7 +203,7 @@ export class NarrativeCache {
  * Groups multiple narrative generation requests for efficiency
  */
 export class NarrativeBatchProcessor {
-  private queue: Array<{
+  private pendingRequests: Array<{
     eventId: string;
     civilizationId: string;
     perspective: string;
@@ -218,13 +218,21 @@ export class NarrativeBatchProcessor {
   /**
    * Queue narrative generation request
    */
+  queue(
+    eventId: string,
+    civilizationId: string,
+    perspective: string
+  ): Promise<string> {
+    return this.queueRequest(eventId, civilizationId, perspective);
+  }
+
   async queueRequest(
     eventId: string,
     civilizationId: string,
     perspective: string
   ): Promise<string> {
     return new Promise((resolve, reject) => {
-      this.queue.push({
+      this.pendingRequests.push({
         eventId,
         civilizationId,
         perspective,
@@ -234,7 +242,7 @@ export class NarrativeBatchProcessor {
 
       // Start batch processing if not already running
       if (!this.timer) {
-        if (this.queue.length >= this.batchSize) {
+        if (this.pendingRequests.length >= this.batchSize) {
           this.processBatch();
         } else {
           this.timer = setTimeout(() => this.processBatch(), this.batchDelay);
@@ -252,7 +260,7 @@ export class NarrativeBatchProcessor {
       this.timer = null;
     }
 
-    const batch = this.queue.splice(0, this.batchSize);
+    const batch = this.pendingRequests.splice(0, this.batchSize);
     if (batch.length === 0) return;
 
     // Process batch items in parallel
@@ -270,7 +278,7 @@ export class NarrativeBatchProcessor {
     await Promise.all(promises);
 
     // Schedule next batch if queue is not empty
-    if (this.queue.length > 0) {
+    if (this.pendingRequests.length > 0) {
       this.timer = setTimeout(() => this.processBatch(), this.batchDelay);
     }
   }
@@ -279,14 +287,14 @@ export class NarrativeBatchProcessor {
    * Get queue size
    */
   getQueueSize(): number {
-    return this.queue.length;
+    return this.pendingRequests.length;
   }
 
   /**
    * Clear queue
    */
   clearQueue(): void {
-    this.queue = [];
+    this.pendingRequests = [];
     if (this.timer) {
       clearTimeout(this.timer);
       this.timer = null;

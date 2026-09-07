@@ -4,6 +4,8 @@ import {
   agentWorkflows,
   agentConfigurations,
   agentExecutionHistory,
+} from "../../drizzle/schema";
+import type {
   InsertAgentTask,
   InsertAgentWorkflow,
   InsertAgentConfiguration,

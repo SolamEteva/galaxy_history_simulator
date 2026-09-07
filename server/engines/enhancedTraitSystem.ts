@@ -239,15 +239,19 @@ export function calculateTraitInfluence(
   behaviorName: string,
   baseValue: number
 ): number {
-  let influence = baseValue;
-
+    let influence = baseValue;
+  const behaviorAliases: Record<string, string[]> = {
+    warProbability: ["warProbability", "warDeclarationProbability", "conflictEscalation", "preemptiveStrikeProbability"],
+  };
+  const behaviorKeys = behaviorAliases[behaviorName] ?? [behaviorName];
   for (const [, trait] of traits) {
-    const multiplier = trait.multipliers[behaviorName];
-    if (multiplier !== undefined) {
-      influence *= multiplier;
+    const matchingMultiplier = behaviorKeys
+      .map(key => trait.multipliers[key])
+      .find(multiplier => multiplier !== undefined);
+    if (matchingMultiplier !== undefined) {
+      influence *= 1 + (matchingMultiplier - 1) * trait.value;
     }
   }
-
   return influence;
 }
 
@@ -362,7 +366,16 @@ export function evolveTraits(
     magnitude: number; // 0-1
   }>
 ): Map<string, Trait> {
-  const evolved = new Map(traits);
+  const evolved = new Map(
+    Array.from(traits.entries(), ([id, trait]) => [
+      id,
+      {
+        ...trait,
+        affectsVariables: [...trait.affectsVariables],
+        multipliers: { ...trait.multipliers },
+      },
+    ])
+  );
 
   for (const experience of experiences) {
     for (const [traitId, trait] of evolved) {
@@ -417,7 +430,10 @@ export function generateTraitProfile(
     traits.set('xenophobia', { ...NEGATIVE_TRAITS.XENOPHOBIA, value: 0.5 + Math.random() * 0.3 });
   }
 
-  // All civilizations get a mix of traits
+  // All civilizations get a mix of traits. Positive traits are always present;
+  // environmental abundance changes their starting strength rather than removing them.
+  traits.set('empathy', { ...POSITIVE_TRAITS.EMPATHY, value: abundance > 0.6 ? 0.6 + Math.random() * 0.3 : 0.4 + Math.random() * 0.2 });
+  traits.set('generosity', { ...POSITIVE_TRAITS.GENEROSITY, value: abundance > 0.6 ? 0.5 + Math.random() * 0.3 : 0.3 + Math.random() * 0.2 });
   // Add curiosity (universal drive to explore)
   traits.set('curiosity', { ...POSITIVE_TRAITS.CURIOSITY, value: 0.4 + Math.random() * 0.3 });
 

@@ -4,8 +4,8 @@ import { progressTracker } from "../progressTracker";
 
 describe("Export Router", () => {
   beforeEach(() => {
-    // Clear progress data before each test
-    progressTracker.clear(1);
+    // ProgressTracker is a process singleton; isolate every test run.
+    progressTracker.clearAll();
   });
 
   describe("Progress Tracking", () => {
